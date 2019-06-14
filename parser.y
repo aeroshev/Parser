@@ -1,820 +1,70 @@
 %{
     #define YYDEBUG 1
-    #include <string>
-    #include <map>
-    #include <vector>
-    #include <fstream>
-    #include <iostream>
-    #include <random>
-    #include <limits>
+    #define YYERROR_VERBOSE 1
     #include "Prog.h"
 
     extern FILE * yyin;
+    extern int yy_flex_debug;
 
     int yylex(void);
     void yyerror(char *s);
-// 1 - Wall
-// 0 - empty
-// 2 - exit
-//rebulid for 3d variable
+    void COMP_ERROR(const char*);
+    Vertex* ERROR(const std::string&, int);
 
-template <class T>
-T getRandom()
-{
-    static std::random_device device;
-    static std::uniform_int_distribution<T> dist(1);
-    return dist(device);
-}
+    bool errorFlag = false;
+//rebilid VAR
 
+std::vector<std::vector<uint64_t> > map = { {1, 1, 1, 1, 1},
+                                            {1, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 1},
+                                            {1, 0, 0, 0, 1},
+                                            {1, 1, 1, 2, 1} };
 
-class enum Cell
-{
-    Empty,
-    Wall,
-    Exit
-};
+std::pair<uint64_t, uint64_t> start = std::make_pair(1, 1);
+std::pair<uint64_t, uint64_t> vision = std::make_pair(1, 0);
 
-class Robot
-{
-private:
-    std::vector<std::vector<uint64_t> > map;
-    std::pair<uint64_t, uint64_t> coordinate;
-    std::pair<int, int> gaze_direction;
 
-    constexpr uint16_t edge_hysteria = 10;
-    constexpr uint16_t level_hysteria = 0;
+MAIN_CLASS machine(start, vision, map);
 
-    
-    static constexpr std::pair<int, int> Down = std::make_pair(0, 1);
-    static constexpr std::pair<int, int> Right = std::make_pair(1, 0);
-    static constexpr std::pair<int, int> Up = std::make_pair(0, -1);
-    static constexpr std::pair<int, int> Left = std::make_pair(-1, 0);
+void freeNode(Vertex *);
 
-public:
-    Robot(const std::pair<uint64_t, uint64_t>& coor, const std::pair<uint64_t, uint64_t>& dir, const std::vector<std::vector<uint64_t> > map_out):
-    map(map_out),
-    coordinate(coor),
-    gaze_direction(dir)
-    {}
 
-    Cell move()
-    {
-        coordinate += gaze_direction;
-        if (map[gaze_direction.first][gaze_direction.second] == Cell::Wall)
-        {
-            return Cell::Wall;
-        }
-        if (map[gaze_direction.first][gaze_direction.second] == Cell::Exit)
-        {
-            return Cell::Exit;
-        }
+/*
+compound_statement:
+        '{' '}'             { $$ = nullptr; }
+        | '{' statement_list '}'            { $$ = $2; }
+        ;
 
-        return Cell::Empty;
-    }
+statement_list:
+        statement           { $$ = machine.create("ENDLINE", 2, $1, nullptr); }
+        | statement_list statement           { $$ = machine.create("ENDLINE", 2, $1, $2); }
+        ;
 
-    void rotate_left()
-    {
-        switch(gaze_direction)
-        {
-            case Down:
-            {
-                gaze_direction = Right;
-                break;
-            }
-            case Right:
-            {
-                gaze_direction = Up;
-                break;
-            }
-            case Up:
-            {
-                gaze_direction = Left;
-                break;
-            }
-            case Left:
-            {
-                gaze_direction = Down;
-                break;
-            }
-        }
-    }
-    void rotate_right()
-    {
-        switch(gaze_direction)
-        {
-            case Down:
-            {
-                gaze_direction = Left;
-                break;
-            }
-            case Left:
-            {
-                gaze_direction = Up;
-                break;
-            }
-            case Up:
-            {
-                gaze_direction = Right;
-                break;
-            }
-            case Right:
-            {
-                gaze_direction = Down;
-                break;
-            }
-        }
-    }
+   | MXCOMP         { $$ = ERROR("Don't get expression", @1.first_line); }
+    | ELCOMP          { $$ = ERROR("Don't get expression", @1.first_line); }
+    | MXTRUE          { $$ = ERROR("Don't get expression", @1.first_line); }
+    | MXFALSE         { $$ = ERROR("Don't get expression", @1.first_line); }
 
-    Descriptior_Value get_environment()
-    {
+    enumeration_list:
+        INTEGER          { $$ = nullptr; machine.enumeration.push_back($1); }
+        | enumeration_list ',' INTEGER           { $$ = nullptr; machine.enumeration.push_back($3); }
+        ;
 
-    }
-};
-
-
-
-class Label
-{
-public:
-	
-    Descriptior_Value* value;
-    bool flag;
-    int constant;
-	
-	Result(){}
-	Result(int a, string s, string type) : IVAL(a), ISTR(s), ITYPE(type){}
-	
-};
-
-        class Vertex 
-        { 
-        public:
-            std::string type;
-
-            Vertex(const std::string& name):
-            type(name)
-            {}
-
-            ~virtual Vertex(){}
-        };
-
-        class _Id : public Vertex
-        {
-            std::string name;
-        public:
-
-            _Id(const std::string& type, const std::string& name):
-            Vertex(type),
-            name(name)
-            {}
-        };
-        
-        class _Value : public Vertex
-        {
-            int value;
-        public:
-
-            _Value(const std::string& name, int value):
-            Vertex(name),
-            value(value)
-            {}
-        };
-
-        class funcall : public Vertex
-        {
-            std::string func_name;
-            std::list<std::string> args;
-
-            funcall(const std::string& type, const std::string& func_name, const std::sting& decl, const std::list<std::string>& decl_list):
-            Vertex(type),
-            func_name(func_name),
-            args(decl_list)
-            {
-                args.push_back(decl);
-            }
-        };
-
-        class Node : public Vertex
-        {
-            int count_leaf;
-	        std::vector<Vertex *> leafs;	
-        public:
-            Node(int count_leaf, const std::vector<Vertex *> vec):
-            count_leaf(count_leaf),
-            leafs(vec)
-            {}
-        };
-
-        class Descriptior_Value
-        {
-        public:
-            int dimension;
-            int literal;
-	        std::vector< std::vector<int> > value;
-            std::list<int>& enum_;
-            std::string type;
-
-
-            Descriptior_Value(int dim, const std::list<int>& enum_, int literal. const std::string& type):
-            dimension(dim),
-            literal(literal),
-            enum_(enum_),
-            type(type)
-            {}
-
-        };
-
-        class Descriptior_func
-        {
-        public:
-            std::list<std::string> args;
-            Vertex* body;
-            Vertex* end;
-            Descriptior_Value result;
-
-            Descriptior_func(const std::string& decl, const std::list<std::string>& decl_list, Vertex* stmt_, Vertex* end):
-            args(decl_list),
-            body(stmt_),
-            end(end)
-            {args.push_front(decl);}
-        }
-
-    class MAIN_CLASS
-    {
-    public:
-        std::map<std::string, Descriptior_func *> funcTable;
-        std::map<std::string, std::map<std::string, Descriptior_Value *> idTable;
-
-        std::vector<Descriptior_Value *> temp_idTable;
-
-        std::string VISION;
-        std::string PREV_VISION;
-
-        Vertex* putId(const std::string& name, const std::list<int>& enumeration, int literal, const std::string& type)
-        {
-            Descriptior_Value * object = new Descriptior_Value(enumeration.size(), enumeration, literal, type);
-
-            temp_idTable.push_back(object);
-
-            Vertex * node = new _Id("VAR", name);
-
-            return node;
-        }
-
-        void putFunc(const std::string& name, const std::string& decl, const std::list<std::string>& decl_list, Vertex* stmt, Vertex* end)
-        {
-            Vertex* node = nullptr;
-
-            funcTable[name] = new Descriptior_func(decl, decl_list, stmt, end);
-        }
-
-        	Vertex* create(const std::string& type, int count, ...)
-            {
-                std::vector<Vertex *> leafs;
-
-                va_list vl;
-
-                va_start(vl, count);
-                for (int i = 0; i < count; i++)
-                {
-                    Vertex* ptr = va_arg(vl, Vertex*);			
-                    leafs.push_back(ptr);				
-                }	
-                
-                Vertex* node;
-                node = new Node(type, count, leafs);		
-
-                va_end (vl);
-
-                return node;
-            }
-
-        Vertex* id(const std::string& name)//
-        {
-            Vertex* node = new _Id("ID", name);
-
-            return node;
-        }
-
-        Vertex* constant(int value)//
-        {
-            Vertex* node = new _Value("VALUE", value);
-
-            return node; 
-        }
-
-Label execute(Vertex * vertex)
-{
-		
-		Result res(0, "UNDEF", v->_type);
-		
-		if(vertex->type == "ASSIGN")
-		{
-
-			Node* V_Node = static_cast<Node*>(vertex);
-
-			Lable config_variable = execute(V_Node->leafs[0]);
-
-            Label config_expression = execute(V_Node->leafs[1]);
-			
-			while(Ver_Des)
-			{
-				
-				Node *ADR = static_cast<Node*>(Ver_Des->leafs[1]);
-				string name = static_cast<_Id*>(ADR->leafs[0])->name;
-				Node *ind = static_cast<Node*>(ADR->leafs[1]);
-				 
-
-				 
-				Descriptor *D = nullptr;
-					
-				if(Id_Table[VISION].find(name) != Id_Table[VISION].end())
-					D = Id_Table[VISION][name];
-				else if(Id_Table["GLOBAL"].find(name) != Id_Table["GLOBAL"].end())
-					D = Id_Table["GLOBAL"][name];
-				else
-					COMP_ERROR("ID DID NOT DECLARED IN THIS SCOPE");
-			
-				if(D->_type == "INT")
-				{
-					Descr_Value*D_V = static_cast<Descr_Value*>(D);
-					
-					if(D->_const)
-						COMP_ERROR("ATTEMPT TO CHANGE CONSTANT ID");
-					
-					if(!D_V->Dimension.size())
-						D_V->val = Complete(Ver_Expr->leafs[1]).IVAL;
-					else
-					{
-						vector<int> mas;
-						while (ind)
-						{
-							mas.insert(mas.begin(), Complete(ind->leafs[1]).IVAL);
-							ind = static_cast<Node*>(ind->leafs[0]);
-						}
-						
-						D_V->Index(mas)->val = Complete(Ver_Expr->leafs[1]).IVAL;
-					}
-				}
-
-				Ver_Des = static_cast<Node*>(Ver_Des->leafs[0]);
-			}
-		}		
-
-		if (vertex->type == "VAR")//-----------------
-		{	
-			_Id* VarNode= static_cast<_Id*>(vertex);
-            std::string name = VarNode.name;
-			
-			if(Id_Table[VISION].find(name) != Id_Table[VISION].end())
-				COMP_ERROR("ID ALREADY DECLARED IN THIS SCOPE");
-
-            auto find_ = temp_idTable.find(name);
-
-            if (find_ == temp_idTable.end())
-                COMP_ERROR("FATAL ERROR");
-
-            size_t dim1 = find_->enum_.front();
-            find_->enum_.pop_front();
-            size_t dim2 = find_->enum_.front();
-            find_->enum_.pop_front();
-
-            for (size_t i = 0; i != dim1; i++)
-            {
-                find_->value.push_back(std::vector<int> (dim2));
-                for (size_t j = 0; j != dim2; j++)
-                {
-                    find_->value[i][j] = literal; 
-                }
-            }
-
-            auto result = Id_Table[VISION].insert(std::make_pair(name, *find_));
-            if (!result->second)
-                COMP_ERROR("FATAL ERROR");
-        }	
-		if (vertex->type == "+")//?
-		{	
-			Node* V_Node = static_cast<Node*>(vertex);
-
-            Label config_1 = execute(V_Node->leafs[0]);
-			Label config_2 = execute(V_Node->leafs[1]);
-
-            if (config_1.Descriptior_Value == nullptr || config_2.Descriptior_Value == nullptr)
-                COMP_ERROR("one of the elements is not a variable");
-
-            Label config;
-            size_t dim1, dim2;
-
-            if (config_1.enum_.front() <= config_2.enum_.front())
-                dim1 = config_1.enum_.front();
-            else
-                dim1 = config_2.enum_.front();
-                
-            
-            if (config_1.value[0].size() <= config_2.value[0].size())//repare
-                dim2 = config_1.value[0].size();
-            else
-                dim2 = config_2.value[0].size()
-
-            for (size_t i = 0; i != dim1; i++)
-            {
-                config.value.push_back(std::vector<int> (dim2));
-
-                for(size_t j = 0; j != dim2; j++)
-                {
-                    config.value[i][j] = config_1.value[i][j] + config_2.value[i][j];
-                }
-            }
-
-            return config;		
-        }
-		if (vertex->type == "*")//?
-		{	
-			Node* V_Node = static_cast<Node*>(vertex);
-
-            Label config_1 = execute(V_Node->leafs[0]);
-			Label config_2 = execute(V_Node->leafs[1]);
-
-            if (config_1.Descriptior_Value == nullptr || config_2.Descriptior_Value == nullptr)
-                COMP_ERROR("one of the elements is not a variable");
-
-            Label config;
-            size_t dim1, dim2;
-
-            if (config_1.enum_.front() <= config_2.enum_.front())
-                dim1 = config_1.enum_.front();
-            else
-                dim1 = config_2.enum_.front();
-                
-            
-            if (config_1.value[0].size() <= config_2.value[0].size())//repare
-                dim2 = config_1.value[0].size();
-            else
-                dim2 = config_2.value[0].size()
-
-            for (size_t i = 0; i != dim1; i++)
-            {
-                config.value.push_back(std::vector<int> (dim2));
-
-                for(size_t j = 0; j != dim2; j++)
-                {
-                    config.value[i][j] = config_1.value[i][j] * config_2.value[i][j];
-                }
-            }
-
-            return config;	
-        }
-        if (vertex->type == "-")//?
-		{	
-			Node* V_Node = static_cast<Node*>(vertex);
-
-            Label config_1 = execute(V_Node->leafs[0]);
-			Label config_2 = execute(V_Node->leafs[1]);
-
-            if (config_1.Descriptior_Value == nullptr || config_2.Descriptior_Value == nullptr)
-                COMP_ERROR("one of the elements is not a variable");
-
-            Label config;
-            size_t dim1, dim2;
-
-            if (config_1.enum_.front() <= config_2.enum_.front())
-                dim1 = config_1.enum_.front();
-            else
-                dim1 = config_2.enum_.front();
-                
-            
-            if (config_1.value[0].size() <= config_2.value[0].size())//repare
-                dim2 = config_1.value[0].size();
-            else
-                dim2 = config_2.value[0].size()
-
-            for (size_t i = 0; i != dim1; i++)
-            {
-                config.value.push_back(std::vector<int> (dim2));
-
-                for(size_t j = 0; j != dim2; j++)
-                {
-                    config.value[i][j] = config_1.value[i][j] - config_2.value[i][j];
-                }
-            }
-
-            return config;	
-        }
-        if (vertex->type == "/")//?
-		{	
-			Node* V_Node = static_cast<Node*>(vertex);
-
-            Label config_1 = execute(V_Node->leafs[0]);
-			Label config_2 = execute(V_Node->leafs[1]);
-
-            if (config_1.Descriptior_Value == nullptr || config_2.Descriptior_Value == nullptr)
-                COMP_ERROR("one of the elements is not a variable");
-
-            Label config;
-            size_t dim1, dim2;
-
-            if (config_1.enum_.front() <= config_2.enum_.front())
-                dim1 = config_1.enum_.front();
-            else
-                dim1 = config_2.enum_.front();
-                
-            
-            if (config_1.value[0].size() <= config_2.value[0].size())//repare
-                dim2 = config_1.value[0].size();
-            else
-                dim2 = config_2.value[0].size()
-
-            for (size_t i = 0; i != dim1; i++)
-            {
-                config.value.push_back(std::vector<int> (dim2));
-
-                for(size_t j = 0; j != dim2; j++)
-                {
-                    if (config_2.value[i][j != 0])
-                        config.value[i][j] = config_1.value[i][j] * config_2.value[i][j];
-                    else
-                        COMP_ERROR("TRY DIDIVED ON ZERO");
-                }
-            }
-
-            return config;	
-        }			
-		if (vertex->type == "MXCOMP")
-		{	
-			Node* V_Node = static_cast<Node*>(vertex);
-			
-			Label config = execute(V_Node->leafs[0]);
-
-            if (config.value == nullptr)
-                COMP_ERROR("DON'T HAVE VARIABLE");
-
-            size_t quantity;
-
-            for (size_t i = 0; i != config.value.size(); i++)
-            {
-                for (size_t j = 0; j != config.value[i].size(); j++)
-                {
-                    if (config.value[i][j] != 0)
-                        quantity++;
-                }
-            }
-
-            if (quantity > config.value.size() * config.value[0].size())
-                config.flag = "true";
-            else
-                config.flag = "false";
-
-            return config;	
-        }
-
-        if (vertex->type == "ELCOMP")
-        {
-            //?
-        }
-		if(vertex->type == "NOT")
-		{					
-			Node* V_Node = static_cast<Node*>(v);
-
-            Label config = execute(V_Node->leafs[0]);
-
-            if (config.value == nullptr)
-                COMP_ERROR("DON'T HAVE VARIABLE");
-
-            for (size_t i = 0; i != config.value.size(); i++)
-            {
-                for (size_t j = 0; j != config.value[i].size(); j++)
-                {
-                    if (config.value[i][j] != 0)
-                        config.value[i][j] = 0;
-                    else
-                        config.value[i][j] = 1;
-                }
-            }
-
-            return config;	
-        }
-		if(v->_type == "AND")
-		{		
-            Node* V_Node = static_cast<Node*>(vertex);
-
-            Label config_1 = execute(V_Node->leafs[0]);
-			Label config_2 = execute(V_Node->leafs[1]);
-
-            if (config_1.Descriptior_Value == nullptr || config_2.Descriptior_Value == nullptr)
-                COMP_ERROR("one of the elements is not a variable");
-
-            for (size_t i = 0; i != config.value.size(); i++)
-            {
-                for (size_t j = 0; j != config.value[i].size(); j++)
-                {
-                    config.value[i][j] = config_1.value[i][j] && config_2.value[i][j]
-                }
-            }
-            
-            return config;
-        }	
-		if (vertex->type == "MXTRUE")
-        {
-            Node* V_Node = static_cast<Node*>(vertex);
-			
-			Label config = execute(V_Node->leafs[0]);
-
-            if (config.value == nullptr)
-                COMP_ERROR("DON'T HAVE VARIABLE");
-
-            size_t quantity;
-
-            for (size_t i = 0; i != config.value.size(); i++)
-            {
-                for (size_t j = 0; j != config.value[i].size(); j++)
-                {
-                    if (config.value[i][j] == "true" || config.value[i][j] == 1)
-                        quantity++;
-                }
-            }
-
-            if (quantity > config.value.size() * config.value[0].size())
-                config.flag = "true";
-            else
-                config.flag = "false";
-
-            return config;	
-        }
-        if (vertex->type == "MXFALSE")
-        {
-            Node* V_Node = static_cast<Node*>(vertex);
-			
-			Label config = execute(V_Node->leafs[0]);
-
-            if (config.value == nullptr)
-                COMP_ERROR("DON'T HAVE VARIABLE");
-
-            size_t quantity;
-
-            for (size_t i = 0; i != config.value.size(); i++)
-            {
-                for (size_t j = 0; j != config.value[i].size(); j++)
-                {
-                    if (config.value[i][j] == "false" || config.value[i][j] == 0)
-                        quantity++;
-                }
-            }
-
-            if (quantity > config.value.size() * config.value[0].size())
-                config.flag = "true";
-            else
-                config.flag = "false";
-
-            return config;
-        }
-        if (vertex->type == "ID")
-        {
-            Label config;
-            _Id * V_Node = static_cast<_Id *>(vertex);
-
-            auto element = Id_Table[VISION].find(V_Node->name);
-            if (element != Id_Table[VISION].end())
-            {
-                config.value = *element;
-            }
-
-            return config;
-        }
-        if (vertex->type = "VALUE")
-        {
-            Label config;
-            _Value * V_Node = static_cast<_Id *>(vertex);
-
-            config.constant = V_Node->value;
-        }
-		if(vertex->type == "FOR")
-		{	
-            Node* V_Node = static_cast<Node*>(vertex);
-
-            Label config_counter = execute(V_Node->leafs[0]);
-            Label config_edge = execute(V_Node->leafs[1]);
-            Label config_step = execute(V_Node->leafs[2]);
-
-            if (config_counter.value.size() != config_edge.value.size())
-                COMP_ERROR("");
-            if (config_counter.value.size() != config_step.value.size())
-                COMP_ERROR("");
-            if (config_edge.value.size() != config_step.value.size())
-                COMP_ERROR("");
-
-            while(1)
-            {
-                for (size_t i = 0; i != config_counter.value.size(); i++)
-                {
-                    if (config_counter[i][j] )
-                    for (size_t j = 0; j != config_counter.value[i].size(); j++)
-                    {
-                        //?
-                    }
-                }
-            }
-		}
-        if (vertex->type == "SWITCH")
-        {
-            Node* V_Node = static_cast<Node*>(vertex);
-
-            Label config_logic_expr = execute(V_Node->leafs[0]);
-            Label config_bool_1 = execute(V_Node->leafs[1]);
-            Label config_bool_2 = execute(V_Node->leafs[4]);
-
-            Label config;
-
-            if (config_logic_expr.flag == config_bool_1.flag)
-                config = execute(V_Node->leafs[2]);
-            if (config_logic_expr.flag == config_bool_2.flag)
-                config = execute(V_Node->leafs[5]);
-
-            return config;
-        }
-		if(vertex->type == "DO")
-		{	
-            funcall* call_node = static_cast<funcall*>(vertex);
-
-            //проверяем существрвание такой функции
-            auto ptr_func = funcTable.find(call_node->func_name);
-            if (ptr_func == funcTable.end())
-                COMP_ERROR("NOT FOUND FUNCTION");
-
-            //проверяем количество аргументов в дескрипторе функции и взыова DO 
-            if (ptr_func->second->args.size() != call_node->args.size())
-                COMP_ERROR("number of arguments does not match");
-
-            //проверить, есть ли данные аргументы в вызове DO в предыдущей области видимости
-
-            PREV_VISION = VISION
-            VISION = ptr_func->first;
-
-            //выполнить тело функции
-
-            //выполнить тело RESULT
-
-            
-
-            
-            
-			// Node* V_Call = static_cast<Node*>(v);
-			
-			// string name = (static_cast<_Id*>(V_Call->leafs[0]))->name;
-			// if(name == "MAIN")
-			// 	COMP_ERROR("CAN NOT CALL FUNCTION MAIN");
-			// if(Func_Table.find(name) == Func_Table.end())
-			// 	COMP_ERROR("FUNCTION DID NOT FIND");
-			// string old = VISION;
-			// VISION = name;
-			
-			// Complete(Func_Table[name]);	
-			// for(auto i = Id_Table[name].begin(); i != Id_Table[name].end(); i++)
-			// 	delete i->second;
-			// Id_Table.erase(name);	
-
-			// VISION = old;
-		}
-        if (vertex->type == "GET")
-        {
-
-        }
-        if (vertex->type == "SIZE")
-        {
-            Node* V_Node = static_cast<Node*>(vertex);
-
-            Label config = execute(V_node->leafs[0]);
-
-            if (config.value == nullptr)
-                COMP_ERROR("DONT'T HAVE VALUE");
-
-            config.constant = 2;//?
-
-            return config;
-        }
-
-
-        
-}
-
-};
-
-    MAIN_CLASS machine;
-
-
+       | SWITCH expression BOOL statement_list '[' BOOL statement_list error       { $$ = ERROR("Missed ']'", @1.first_line); yyerrok; }
+    | SWITCH expression BOOL statement_list '[' error statement_list ']'        { $$ = ERROR("Missed second flag", @1.first_line); yyerrok; }
+    | SWITCH expression BOOL statement_list error BOOL statement_list ']'       { $$ = ERROR("Missed '['", @1.first_line); yyerrok; }
+    | SWITCH expression error statement_list '[' BOOL statement_list ']'        { $$ = ERROR("Missed first flag", @1.first_line); yyerrok; }
+*/
 
 %}
 
-
-%union{
+%union
+{
+    Vertex *nPtr;
     int iValue;
     bool iBool;
-    std::string iName;
-    std::list<std::string> args;
-    std::list<int> enum;
-    Vertex * nPtr;
+    char* iName;  
 }
-
-
 
 
 %token <iValue> INTEGER
@@ -829,108 +79,242 @@ Label execute(Vertex * vertex)
 %token VAR
 %token ENDLINE
 %token FOR BOUNDARY STEP SWITCH
+%token PRINT
+%token PLEASE THANKS
 
 
 %left '+' '-'
 %left '*' '/'
+%left '(' ')'
 %nonassoc UMINUS
+%nonassoc '[' ']'
 
-%type <nPtr>  function_definition call_definition t  arithmetic_operator arithmetic_expression logic_expression expression statement statement_list
-%type <args> declaration_lis
-%type <enum> enumeration_list
-%type <iName> declaration
+%type <nPtr> function_definition call_definition binary_operation switch_state expression_list statement_s appeal_state for_loop compound_statement block_item unary_statement definition compare_operation unary_operation robot_operation expression statement statement_list declaration_list
+
 
 %%
 program:
-        statement_list          { machine.execute($1); }
+        FINDEXIT ENDLINE statement_list         { 
+                                                    if (!errorFlag)
+                                                    {
+                                                        machine.execute($3); 
+                                                    }
+                                                    freeNode($3);
+                                                    exit(0);    
+                                                }
         ;
 
 statement_list:
-        statement_list statement ENDLINE          { $$ = machine.create("ENDLINE", 2, $1, $2); }
-        | /*NULL*/         { init(); $$ = 0; }
+        statement           { $$ = $1; }
+        | statement_list statement              { $$ = machine.create("ENDLINE", 2, $1, $2); }
         ;
 
 function_definition:
-        TASK VARIABLE declaration ',' '[' declaration_list ']' statement_list end_           { machine.putFunc($2, $3, $6, $8, $9); }
-        | TASK VARIABLE declaration statement_list end_          { machine.putFunc($2, $3, nullptr, $4, $5); }
+        TASK VARIABLE VARIABLE ',' '[' declaration_list ']' ENDLINE statement_list RESULT VARIABLE           { $$ = nullptr; machine.putFunc($2, $3, $9, $11); delete $2; delete $3; delete $11; }
+        | TASK VARIABLE VARIABLE ENDLINE statement_list RESULT VARIABLE          { $$ = nullptr; machine.putFunc($2, $3, $5, $7); delete $2; delete $3; delete $7; }
+        | TASK error        { $$ = ERROR("Missed name function", @1.first_line); yyerrok; }
         ;
 
-end_:
-        RESULT VARIABLE         { $$ = machine.create("RESULT", 1, machine.id($2)); }
-
 call_definition:
-        DO VARIABLE declaration ',' '[' declaration_list ']'            { $$ = new funcall("DO", $2, $3, $6); }
-        | DO VARIABLE declaration           { $$ = new funcall("DO", $2, $3, nullptr); }
+        DO VARIABLE VARIABLE ',' '[' declaration_list ']'            { $$ = machine.funcall("DO", $2, $3, machine.args); delete $2; delete $3; }
+        | DO VARIABLE VARIABLE           { $$ = machine.funcall("DO", $2, $3); delete $2; delete $3; }
+        | DO error          { $$ = ERROR("Missed name function", @1.first_line); yyerrok; }
         ;
 
 declaration_list:
-        VARIABLE            { $$.clear(); $$.push_back($1); }
-        | declaration_list ',' VARIABLE         { $$ = $1; $$.push_back($3); }
+        VARIABLE            { $$ = nullptr; machine.args.push_back($1); delete $1; }
+        | declaration_list ',' VARIABLE         { $$ = nullptr; machine.args.push_back($3); delete $3; }
         ;
 
-enumeration_list:
-        INTEGER          { $$.clear(); $$.push_back($1); }
-        | enumeration_list ',' INTEGER           { $$ = $1; $$.push_back($3); }
+expression_list:
+        expression          { $$ = nullptr; machine.exprl.push_back($1); }
+        | expression_list ',' expression            { $$ = nullptr; machine.exprl.push_back($3); }
         ;
-
-arithmetic_expression:
-    INTEGER         { $$ = machine.constant($1); }
-    | VARIABLE          { $$ = machine.id($1); }
-    | arithmetic_expression "+" arithmetic_expression           { $$ = machine.create("+", 2, $1, $3); }
-    | arithmetic_expression "*" arithmetic_expression           { $$ = machine.create("*", 2, $1, $3); }
-    | arithmetic_expression "-" arithmetic_expression           { $$ = machine.create("-", 2, $1, $3); }
-    | arithmetic_expression "/" arithmetic_expression           { $$ = machine.create("/", 2, $1, $3); }
-    | MXCOMP arithmetic_expression          { $$ = machine.create("MXCOMP", 1, $2); }
-    | ELCOMP arithmetic_expression          { $$ = machine.create("ELCOMP", 1, $2); }
-    | '-' arithmetic_expression %prec UMINUS        { $$ = new unary("UMINUS", $2); }    //
-    ;
-
-logic_expression:
-    BOOL            { $$ = machine.constant($1); }
-    | VARIABLE          { $$ = achine.id($1); }
-    | NOT logic_expression          { $$ = machine.create("NOT", 1, $2); }
-    | logic_expression AND logic_expression         { $$ = machine.create("AND", 2, $1, $3); }
-    | MXTRUE logic_expression           { $$ = machine.create("MXTRUE", 1, $2); }
-    | MXFALSE logic_expression          { $$ = machine.create("MXFALSE", 1, $2); }
-    ;
 
 expression:
-    arithmetic_expression           { $$ = $1; }
-    | logic_expression          { $$ = $1; }
-    | LOGITIZE VARIABLE         { $$ = machine.create("LOGITIZE", 1, machine.id($2)); }
-    | DIGITIZE VARIABLE         { $$ = machine.create("DIGITIZE", 1, machine.id($2)); }
-    | REDUCE VARIABLE '[' INTEGER ']'           { $$ = machine.create("REDUCE", 2, machine.id($2), machine.constant($4)); }
-    | EXTENED VARIABLE '[' INTEGER ']'          { $$ = machine.create("EXTENED", 2 , machine.id($2), machine.constant($4)); }
+    BOOL            { $$ = machine.constant($1, "BOOL"); }
+    | INTEGER         { $$ = machine.constant($1, "INT"); }
+    | VARIABLE          { $$ = machine.id($1); delete $1; }
+    | binary_operation          { $$ = $1; }
+    | robot_operation           { $$ = $1; }
+    | unary_operation           { $$ = $1; }
+    | VARIABLE '[' expression_list ']'         { $$ = machine.appeal("APPEAL", $1); delete $1; }
+    | VARIABLE '[' expression_list error           { $$ = ERROR("Missed ']'", @1.first_line); yyerrok; delete $1; } 
+    | VARIABLE '[' error            { $$ = ERROR("Missed enumeration",@1.first_line); yyerrok; delete $1; }
+    | VARIABLE error            { $$ = ERROR("Missed '['", @1.first_line); yyerrok; delete $1; }
     | '(' expression ')'            { $$ = $2; }
-    | SIZE '(' VARIABLE ')'         { $$ = machine.create("SIZE", 1, machine.id($3)); }
-    | VARIABLE '[' declaration_list ']'         { $$ = machine.appeal("APPEAL", $1, $3); }//?
-    | MOVE          {}                  
-    | R_LEFT            {}           
-    | R_RIGHT           {}          
-    | GET_E         {}
+    ;
+
+binary_operation:
+    expression '+' expression           { $$ = machine.create("+", 2, $1, $3); }
+    | expression '*' expression           { $$ = machine.create("*", 2, $1, $3); }
+    | expression '-' expression           { $$ = machine.create("-", 2, $1, $3); }
+    | expression '/' expression           { $$ = machine.create("/", 2, $1, $3); }
+    | expression AND expression         { $$ = machine.create("AND", 2, $1, $3); }
+    | expression error expression       { $$ = ERROR("Missed operator", @1.first_line); yyerrok; }
+    ;
+
+robot_operation:
+    MOVE          { $$ = machine.robot("MOVE"); }                  
+    | R_LEFT            { $$ = machine.robot("ROTATE_LEFT"); }           
+    | R_RIGHT           { $$ = machine.robot("ROTATE_RIGHT"); }          
+    | GET_E         { $$ = machine.robot("GET_E"); }
+    ;
+
+unary_operation:
+    compare_operation           { $$ = $1; }
+    | '-' expression %prec UMINUS        { $$ = machine.create("UMINUS",1, $2); } 
+    | NOT expression          { $$ = machine.create("NOT", 1, $2); }
+    | NOT error               { $$ = ERROR("It's not a expression", @1.first_line); yyerrok; }
+    | SIZE '(' VARIABLE ')'         { $$ = machine.create("SIZE", 1, machine.id($3)); delete $3; }
+    | SIZE '(' VARIABLE error       { $$ = ERROR("Missed ')'", @1.first_line);}
+    | SIZE '('')'            { $$ = ERROR("Missed name variable", @1.first_line); }
+    | SIZE error            { $$ = ERROR("Missed '('", @1.first_line); yyerrok; }
+    | GET VARIABLE          { $$ = machine.create("GET", 1, machine.id_func($2)); delete $2; }
+    | GET error             { $$ = ERROR("Don't get variable", @1.first_line); yyerrok; }
+    ;
+
+compare_operation:
+    MXCOMP expression          { $$ = machine.create("MXCOMP", 1, $2); }
+    | ELCOMP expression          { $$ = machine.create("ELCOMP", 1, $2); }
+    | MXTRUE expression           { $$ = machine.create("MXTRUE", 1, $2); }
+    | MXFALSE expression          { $$ = machine.create("MXFALSE", 1, $2); }
     ;
 
 statement:
-    expression          { $$ = $1; }
-    | VARIABLE '=' expression           { $$ = machine.create("ASSIGN", 2, machine.id($1), $3); }
-    | VAR VARIABLE '[' enumeration_list ']' '=' INTEGER            { machine.putId($2, $4, $7, "INT"); }
-    | function_definition           { $$ = $1; }
-    | FOR VARIABLE BOUNDARY VARIABLE STEP VARIABLE statement_list           { $$ = machine.create("FOR", 4, machine.id($2), machine.id($4), machine.id($6), $7); }
-    | SWITCH logic_expression BOOL statement_list '[' BOOL statement_list ']'           { $$ = machine.create("SWITCH", 5, $2, machine.constant($3), $4, machine.constant($6), $7); }
+    statement_s ENDLINE                     { $$ = $1; }
+    | PLEASE statement_s ENDLINE            { $$ = $2; /*machine.courtesy(1);*/ }
+    | PLEASE statement_s THANKS ENDLINE     { $$ = $2; /*machine.courtesy(2);*/ }
+    | statement_s THANKS ENDLINE            { $$ = $1; /*machine.courtesy(1);*/ }
+    | ENDLINE                               { $$ = nullptr; }       
+    ;
+
+statement_s:
+    compound_statement          { $$ = $1; }
+    | definition                { $$ = $1; }
+    | unary_statement           { $$ = $1; }
+    | function_definition       { $$ = $1; }
     | call_definition           { $$ = $1; }
-    | GET VARIABLE          { $$ = machine.create("GET", 1, machine.id($2); }
+    | robot_operation           { $$ = $1; }
+    | for_loop                  { $$ = $1; }
+    | switch_state              { $$ = $1; }
+    | PRINT VARIABLE            { $$ = machine.create("PRINT", 1, machine.id($2)); delete $2; }
+    | PRINT error                { $$ = ERROR("Missed variable", @1.first_line); yyerrok; }
+    | VARIABLE '=' expression           { $$ = machine.create("ASSIGN", 2, machine.id($1), $3); delete $1; }
+    | VARIABLE error expression         { $$ = ERROR("Missed '='", @1.first_line); yyerrok; delete $1; }
+    | appeal_state '=' expression         { $$ = machine.create("ASSIGN_A", 2, $1, $3); } 
+    | appeal_state error expression         { $$ = ERROR("Missed '='", @1.first_line); }
+    ;
+
+
+switch_state:
+    SWITCH expression BOOL statement_list '[' BOOL statement_list ']'           { $$ = machine.create("SWITCH", 5, $2, machine.constant($3, "BOOL"), $4, machine.constant($6, "BOOL"), $7);} 
+    ;
+
+appeal_state:
+    VARIABLE '[' expression_list ']'           { $$ = machine.appeal("APPEAL_A", $1); delete $1; }
+    | VARIABLE '[' expression_list error           { $$ = ERROR("Missed ']'", @1.first_line); yyerrok; delete $1; } 
+    | VARIABLE '[' error            { $$ = ERROR("Missed enumeration",@1.first_line); yyerrok;  delete $1; }
+    | VARIABLE error            { $$ = ERROR("Missed '['", @1.first_line); yyerrok; delete $1; }
+    ;
+
+for_loop:
+    FOR VARIABLE BOUNDARY VARIABLE STEP VARIABLE ENDLINE '(' statement_list ')'           { $$ = machine.create("FOR", 4, machine.id($2), machine.id($4), machine.id($6), $9); delete $2; delete $4; delete $6; }
+    | FOR VARIABLE BOUNDARY VARIABLE STEP VARIABLE ENDLINE '(' statement_list error ENDLINE             { $$ = ERROR("Missed ')' for loop block", @1.first_line); yyerrok; }
+    ;
+
+compound_statement:
+    '(' ')'             { $$ = nullptr; }
+    | '(' block_item ')'             { $$ = $2; }
+    ;
+
+block_item:
+    statement         { $$ = $1; }
+    | block_item statement                { $$ = machine.create("ENDLINE", 2, $1, $2); }
+    ;
+
+definition:
+    VAR VARIABLE '[' expression_list ']' '=' INTEGER            { $$ = machine.putId($2, $7, "INT"); delete $2; }
+    | VAR VARIABLE '[' expression_list ']' '=' BOOL            { $$ = machine.putId($2, $7, "BOOL"); delete $2; }
+    | VAR VARIABLE '=' INTEGER          { $$ = machine.putId($2, $4, "INT"); delete $2; }
+    | VAR VARIABLE '=' BOOL             { $$ = machine.putId($2, $4, "BOOL"); delete $2; }
+    | VAR VARIABLE '[' expression_list ']' '=' error ENDLINE             { $$ = ERROR("Missed literal", @1.first_line); yyerrok; delete $2; }
+    | VAR VARIABLE '[' expression_list ']' error ENDLINE          { $$ = ERROR("Missed '='", @1.first_line); yyerrok; delete $2; }
+    | VAR VARIABLE '[' expression_list error ENDLINE          { $$ = ERROR("Missed ']'", @1.first_line); yyerrok; delete $2; }
+    | VAR VARIABLE '[' error ENDLINE               { $$ = ERROR("Missed enumeration size", @1.first_line); yyerrok; delete $2; }
+    | VAR VARIABLE error ENDLINE          { $$ = ERROR("Missed '[' or '='", @1.first_line); yyerrok; delete $2; }
+    | VAR VARIABLE '=' error ENDLINE            { $$ = ERROR("Missed literal", @1.first_line); yyerrok; delete $2; }
+    | VAR error ENDLINE                 { $$ = ERROR("Missed name", @1.first_line); yyerrok;}
+    ;
+
+unary_statement:
+    LOGITIZE VARIABLE         { $$ = machine.create("LOGITIZE", 1, machine.id($2)); delete $2; }
+    | DIGITIZE VARIABLE         { $$ = machine.create("DIGITIZE", 1, machine.id($2)); delete $2; }
+    | REDUCE VARIABLE '[' INTEGER ']'           { $$ = machine.create("REDUCE", 2, machine.id($2), machine.constant($4, "INT")); delete $2; }
+    | EXTENED VARIABLE '[' INTEGER ']'          { $$ = machine.create("EXTENED", 2 , machine.id($2), machine.constant($4, "INT")); delete $2; }
+    | REDUCE VARIABLE '[' INTEGER error ENDLINE             { $$ = ERROR("Missed ']'", @1.first_line); yyerrok;  delete $2;}
+    | REDUCE VARIABLE '[' error ENDLINE             { $$ = ERROR("Missed number", @1.first_line); yyerrok; delete $2; }
+    | REDUCE VARIABLE error ENDLINE             { $$ = ERROR("Missed '['", @1.first_line); yyerrok; delete $2; }
+    | REDUCE error ENDLINE              { $$ = ERROR("Missed variable", @1.first_line); yyerrok;}
+    | EXTENED VARIABLE '[' INTEGER error ENDLINE             { $$ = ERROR("Missed ']'", @1.first_line); yyerrok; delete $2; }
+    | EXTENED VARIABLE '[' error ENDLINE             { $$ = ERROR("Missed number", @1.first_line); yyerrok; delete $2; }
+    | EXTENED VARIABLE error ENDLINE             { $$ = ERROR("Missed '['", @1.first_line); yyerrok; delete $2; }
+    | EXTENED error ENDLINE              { $$ = ERROR("Missed variable", @1.first_line); yyerrok;}
     ;
 %%
 
+//setting
 void yyerror(char *s) {
     fprintf(stdout, "%s\n", s);
 }
 
+void COMP_ERROR(const char* exept)
+{
+    std::cout << "Crash: " << exept << '\n';
+    machine.clear_sys();
+    exit(1);
+}
+
+Vertex* ERROR(const std::string& type, int line)
+{
+    std::cerr << "Error syntax at line -> " << line << ": " << type << '\n';
+    errorFlag = true;
+    return nullptr;
+}
 
 
+void freeNode(Vertex *node)
+{   
+
+    // std::cout << "FREENODE" << '\n'; 
+    if (node == nullptr) 
+        return;
+    // std::cout << node->type << '\n';
+    Node *ptr = nullptr;
+ 
+
+    if((ptr = dynamic_cast<Node*>(node)))
+    {
+        if (ptr == nullptr)
+            return;
+        // std::cout << "QUANTITY LEAFS " << ptr->leafs.size() << '\n';
+        for(int i = 0; i < ptr->leafs.size(); ++i)
+        {
+                freeNode(ptr->leafs[i]);
+        }
+    }
+    // std::cout << "tick" << '\n';
+    if (node) 
+        delete node;
+    // std::cout << "tack" << '\n';
+}
+
+
+//algorithm
 int main(void) {
     #if YYDEBUG
     yydebug = 1;
+    yy_flex_debug = 1;
     #endif
     yyin = fopen ("./test.txt", "r");
     yyparse();

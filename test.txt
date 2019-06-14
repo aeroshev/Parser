@@ -1,0 +1,9 @@
+FINDEXIT
+
+( PLEASE VAR name = 1 THANKS
+PLEASE VAR name2 = 1
+VAR name3 = 1 THANKS
+VAR name4 = 1
+)
+
+
