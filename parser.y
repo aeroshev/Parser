@@ -4,6 +4,7 @@
     #include "Prog.h"
 
     extern FILE * yyin;
+    extern int yylineno;
     extern int yy_flex_debug;
 
     int yylex(void);
@@ -12,13 +13,14 @@
     Vertex* ERROR(const std::string&, int);
 
     bool errorFlag = false;
-//rebilid VAR
 
-std::vector<std::vector<uint64_t> > map = { {1, 1, 1, 1, 1},
-                                            {1, 0, 0, 0, 1},
-                                            {1, 0, 0, 0, 1},
-                                            {1, 0, 0, 0, 1},
-                                            {1, 1, 1, 2, 1} };
+std::vector<std::vector<uint64_t> > map = { {1, 1, 1, 1, 1, 1, 1},
+                                            {1, 0, 0, 0, 1, 0, 1},
+                                            {1, 1, 1, 0, 1, 0, 1},
+                                            {1, 0, 0, 0, 0, 0, 1},
+                                            {1, 1, 1, 0, 1, 1, 1},
+                                            {1, 0, 0, 0, 0, 0, 1},
+                                            {1, 1, 1, 1, 1, 2, 1} };
 
 std::pair<uint64_t, uint64_t> start = std::make_pair(1, 1);
 std::pair<uint64_t, uint64_t> vision = std::make_pair(1, 0);
@@ -54,8 +56,22 @@ statement_list:
     | SWITCH expression BOOL statement_list '[' error statement_list ']'        { $$ = ERROR("Missed second flag", @1.first_line); yyerrok; }
     | SWITCH expression BOOL statement_list error BOOL statement_list ']'       { $$ = ERROR("Missed '['", @1.first_line); yyerrok; }
     | SWITCH expression error statement_list '[' BOOL statement_list ']'        { $$ = ERROR("Missed first flag", @1.first_line); yyerrok; }
-*/
 
+
+    program:
+        statement_list { check_main(); }
+        ;
+
+    statement_list:
+        function_defintion
+        | statemnt_list function_definition
+        | ENDLINE
+        ;
+
+
+*/
+//стартовый символ список функций
+//findexit типа main
 %}
 
 %union
@@ -89,19 +105,29 @@ statement_list:
 %nonassoc UMINUS
 %nonassoc '[' ']'
 
-%type <nPtr> function_definition call_definition binary_operation switch_state expression_list statement_s appeal_state for_loop compound_statement block_item unary_statement definition compare_operation unary_operation robot_operation expression statement statement_list declaration_list
+%type <nPtr> function_s function_definition  function_list call_definition binary_operation switch_state expression_list statement_s appeal_state for_loop compound_statement block_item unary_statement definition compare_operation unary_operation robot_operation expression statement statement_list declaration_list
 
 
 %%
 program:
-        FINDEXIT ENDLINE statement_list         { 
+        function_list                           { 
                                                     if (!errorFlag)
                                                     {
-                                                        machine.execute($3); 
+                                                        machine.check_main($1); 
                                                     }
-                                                    freeNode($3);
+                                                    freeNode($1);
                                                     exit(0);    
                                                 }
+        ;
+
+function_list:
+        function_s            { $$ = $1; }
+        | function_list function_s             { $$ = machine.create("ENDLINE", 2, $1, $2); }
+        ;
+
+function_s:
+        function_definition          { $$ = $1; }
+        | ENDLINE           { $$ = nullptr; }
         ;
 
 statement_list:
@@ -112,6 +138,7 @@ statement_list:
 function_definition:
         TASK VARIABLE VARIABLE ',' '[' declaration_list ']' ENDLINE statement_list RESULT VARIABLE           { $$ = nullptr; machine.putFunc($2, $3, $9, $11); delete $2; delete $3; delete $11; }
         | TASK VARIABLE VARIABLE ENDLINE statement_list RESULT VARIABLE          { $$ = nullptr; machine.putFunc($2, $3, $5, $7); delete $2; delete $3; delete $7; }
+        | TASK FINDEXIT ENDLINE statement_list RESULT           { $$ = $4; machine.putFunc($4); }
         | TASK error        { $$ = ERROR("Missed name function", @1.first_line); yyerrok; }
         ;
 
@@ -183,9 +210,9 @@ compare_operation:
 
 statement:
     statement_s ENDLINE                     { $$ = $1; }
-    | PLEASE statement_s ENDLINE            { $$ = $2; /*machine.courtesy(1);*/ }
-    | PLEASE statement_s THANKS ENDLINE     { $$ = $2; /*machine.courtesy(2);*/ }
-    | statement_s THANKS ENDLINE            { $$ = $1; /*machine.courtesy(1);*/ }
+    | PLEASE statement_s ENDLINE            { $$ = machine.courtesy(1, $2); }
+    | PLEASE statement_s THANKS ENDLINE     { $$ = machine.courtesy(2, $2); }
+    | statement_s THANKS ENDLINE            { $$ = machine.courtesy(1, $1); }
     | ENDLINE                               { $$ = nullptr; }       
     ;
 
@@ -209,6 +236,10 @@ statement_s:
 
 switch_state:
     SWITCH expression BOOL statement_list '[' BOOL statement_list ']'           { $$ = machine.create("SWITCH", 5, $2, machine.constant($3, "BOOL"), $4, machine.constant($6, "BOOL"), $7);} 
+    | SWITCH expression BOOL statement_list '[' BOOL statement_list error       { $$ = ERROR("Missed ']'", @1.first_line); yyerrok; }
+    | SWITCH expression BOOL statement_list '[' error        { $$ = ERROR("Missed second flag", @1.first_line); yyerrok; }
+    | SWITCH expression BOOL statement_list error BOOL       { $$ = ERROR("Missed '['", @6.first_line); yyerrok; }
+    | SWITCH expression error         { $$ = ERROR("Missed first flag", @1.first_line); yyerrok; }
     ;
 
 appeal_state:
@@ -238,13 +269,13 @@ definition:
     | VAR VARIABLE '[' expression_list ']' '=' BOOL            { $$ = machine.putId($2, $7, "BOOL"); delete $2; }
     | VAR VARIABLE '=' INTEGER          { $$ = machine.putId($2, $4, "INT"); delete $2; }
     | VAR VARIABLE '=' BOOL             { $$ = machine.putId($2, $4, "BOOL"); delete $2; }
-    | VAR VARIABLE '[' expression_list ']' '=' error ENDLINE             { $$ = ERROR("Missed literal", @1.first_line); yyerrok; delete $2; }
-    | VAR VARIABLE '[' expression_list ']' error ENDLINE          { $$ = ERROR("Missed '='", @1.first_line); yyerrok; delete $2; }
-    | VAR VARIABLE '[' expression_list error ENDLINE          { $$ = ERROR("Missed ']'", @1.first_line); yyerrok; delete $2; }
-    | VAR VARIABLE '[' error ENDLINE               { $$ = ERROR("Missed enumeration size", @1.first_line); yyerrok; delete $2; }
-    | VAR VARIABLE error ENDLINE          { $$ = ERROR("Missed '[' or '='", @1.first_line); yyerrok; delete $2; }
-    | VAR VARIABLE '=' error ENDLINE            { $$ = ERROR("Missed literal", @1.first_line); yyerrok; delete $2; }
-    | VAR error ENDLINE                 { $$ = ERROR("Missed name", @1.first_line); yyerrok;}
+    | VAR VARIABLE '[' expression_list ']' '=' error             { $$ = ERROR("Missed literal", @7.first_line); yyerrok; delete $2; }
+    | VAR VARIABLE '[' expression_list ']' error           { $$ = ERROR("Missed '='", @6.first_line); yyerrok; delete $2; }
+    | VAR VARIABLE '[' expression_list error           { $$ = ERROR("Missed ']'", @5.first_line); yyerrok; delete $2; }
+    | VAR VARIABLE '[' error                { $$ = ERROR("Missed enumeration size", @4.first_line); yyerrok; delete $2; }
+    | VAR VARIABLE error           { $$ = ERROR("Missed '[' or '='", @3.first_line); yyerrok; delete $2; }
+    | VAR VARIABLE '=' error            { $$ = ERROR("Missed literal", @4.first_line); yyerrok; delete $2; }
+    | VAR error                  { $$ = ERROR("Missed name", @2.first_line); yyerrok;}
     ;
 
 unary_statement:
@@ -252,14 +283,14 @@ unary_statement:
     | DIGITIZE VARIABLE         { $$ = machine.create("DIGITIZE", 1, machine.id($2)); delete $2; }
     | REDUCE VARIABLE '[' INTEGER ']'           { $$ = machine.create("REDUCE", 2, machine.id($2), machine.constant($4, "INT")); delete $2; }
     | EXTENED VARIABLE '[' INTEGER ']'          { $$ = machine.create("EXTENED", 2 , machine.id($2), machine.constant($4, "INT")); delete $2; }
-    | REDUCE VARIABLE '[' INTEGER error ENDLINE             { $$ = ERROR("Missed ']'", @1.first_line); yyerrok;  delete $2;}
-    | REDUCE VARIABLE '[' error ENDLINE             { $$ = ERROR("Missed number", @1.first_line); yyerrok; delete $2; }
-    | REDUCE VARIABLE error ENDLINE             { $$ = ERROR("Missed '['", @1.first_line); yyerrok; delete $2; }
-    | REDUCE error ENDLINE              { $$ = ERROR("Missed variable", @1.first_line); yyerrok;}
-    | EXTENED VARIABLE '[' INTEGER error ENDLINE             { $$ = ERROR("Missed ']'", @1.first_line); yyerrok; delete $2; }
-    | EXTENED VARIABLE '[' error ENDLINE             { $$ = ERROR("Missed number", @1.first_line); yyerrok; delete $2; }
-    | EXTENED VARIABLE error ENDLINE             { $$ = ERROR("Missed '['", @1.first_line); yyerrok; delete $2; }
-    | EXTENED error ENDLINE              { $$ = ERROR("Missed variable", @1.first_line); yyerrok;}
+    | REDUCE VARIABLE '[' INTEGER error             { $$ = ERROR("Missed ']'", @1.first_line); yyerrok;  delete $2;}
+    | REDUCE VARIABLE '[' error             { $$ = ERROR("Missed number", @1.first_line); yyerrok; delete $2; }
+    | REDUCE VARIABLE error             { $$ = ERROR("Missed '['", @1.first_line); yyerrok; delete $2; }
+    | REDUCE error              { $$ = ERROR("Missed variable", @1.first_line); yyerrok;}
+    | EXTENED VARIABLE '[' INTEGER error             { $$ = ERROR("Missed ']'", @1.first_line); yyerrok; delete $2; }
+    | EXTENED VARIABLE '[' error             { $$ = ERROR("Missed number", @1.first_line); yyerrok; delete $2; }
+    | EXTENED VARIABLE error             { $$ = ERROR("Missed '['", @1.first_line); yyerrok; delete $2; }
+    | EXTENED error              { $$ = ERROR("Missed variable", @1.first_line); yyerrok;}
     ;
 %%
 
@@ -316,7 +347,7 @@ int main(void) {
     yydebug = 1;
     yy_flex_debug = 1;
     #endif
-    yyin = fopen ("./test.txt", "r");
+    yyin = fopen ("./test2.txt", "r");
     yyparse();
     fclose (yyin);
     return 0;

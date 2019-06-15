@@ -1,4 +1,4 @@
-FINDEXIT
+TASK FINDEXIT
 
 VAR map = 1
 
@@ -26,7 +26,6 @@ Left [2] = -1
 
 Right [1] = 0x0
 
-PRINT Down
 
 dir = Down
 right_r = Left
@@ -44,18 +43,13 @@ VAR l_2 = 1
 VAR d_1 = 1
 VAR d_2 = 1
 
-VAR sz = 1
-
 //map[1, 3 + right_r[1], 3 + right_r[2]] - not working
 
 FOR counter BOUNDARY edge STEP step
 (
-	map = GET ENVIRONMENT
-	LOGITIZE map
-	
-	sz = SIZE(map)
-	sz = sz / 2
-	PRINT sz
+	PLEASE map = GET ENVIRONMENT THANKS
+	PLEASE LOGITIZE map THANKS
+
 	r_1 = 3 + right_r[1]
 	r_2 = 3 + right_r[2]
 
@@ -66,8 +60,7 @@ FOR counter BOUNDARY edge STEP step
 	d_2 = 3 + dir[2]
 
 	SWITCH map[1, r_1 , r_2] FALSE
-		PRINT r_1
-		PRINT r_2
+	
 		ROTATE RIGHT
 		MOVE
 		
@@ -108,3 +101,4 @@ FOR counter BOUNDARY edge STEP step
 		]	
 	]
 )
+RESULT

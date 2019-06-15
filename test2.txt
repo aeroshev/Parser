@@ -1,3 +1,5 @@
 TASK FINDEXIT
-	
+	VAR name = 
+	VAR name [
+	VAR
 RESULT

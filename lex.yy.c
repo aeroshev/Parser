@@ -1231,7 +1231,7 @@ YY_RULE_SETUP
                         
 
                         yylval.iValue = dec;
-                        std::cout << "DEC " <<  yylval.iValue << '\n';
+                        //std::cout << "DEC " <<  yylval.iValue << '\n';
                         BEGIN(INITIAL);
                         return INTEGER;
                     }

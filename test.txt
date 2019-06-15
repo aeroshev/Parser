@@ -1,9 +1,25 @@
-FINDEXIT
+TASK func was
+	VAR ser = 0xF
+	was = ser
+RESULT was
 
-( PLEASE VAR name = 1 THANKS
-PLEASE VAR name2 = 1
-VAR name3 = 1 THANKS
-VAR name4 = 1
-)
 
+TASK FINDEXIT
+
+TASK func2 var1
+	VAR was = 1
+	DO func was
+	was = GET func
+RESULT was
+
+VAR x = 1
+
+DO func2 x
+VAR res = 1
+
+res = GET func2
+
+PRINT res
+PRINT x
+RESULT
 

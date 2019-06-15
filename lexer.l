@@ -209,7 +209,7 @@ inline int HEX_TO_DEC(const std::string& hex, bool& flag)
                         
 
                         yylval.iValue = dec;
-                        std::cout << "DEC " <<  yylval.iValue << '\n';
+                        //std::cout << "DEC " <<  yylval.iValue << '\n';
                         BEGIN(INITIAL);
                         return INTEGER;
                     }
