@@ -13,10 +13,6 @@
 
 void COMP_ERROR(const char*);
 
-//new strategy - constant and bool are temp variable
-//try more accurate check code
-//NOT FOUND ELEMENT
-//std::cout
 
 enum Cell
 {
@@ -148,15 +144,6 @@ public:
     type(type)
     {}
     
-    /*
-     Descriptior_Value(const Descriptior_Value& object):
-     literal(object.literal),
-     type(object.type),
-     value(object.value),
-     enum_dim(object.enum_dim),
-     shift(object.shift)
-     {}
-     */
 
     Descriptior_Value(const Descriptior_Value& object) = default;
     Descriptior_Value(Descriptior_Value&& object) = default;
@@ -195,25 +182,14 @@ class Label
 public:
     Descriptior_Value* id;
     Descriptior_Value* const_id;
-    //bool flag;
-    //int constant;
+
     status marker;
     
-    Label(Descriptior_Value* ptr = nullptr, Descriptior_Value* ptr2 = nullptr/*, bool flag = false, int const_ = 0*/):
+    Label(Descriptior_Value* ptr = nullptr, Descriptior_Value* ptr2 = nullptr):
     id(ptr),
     const_id(ptr2),
-    /*flag(flag),
-    constant(const_),*/
     marker(status::nothing)
     {}
-
-    /*
-    void printMe()
-    {
-        std::cout << "Id -> " << id << '\n';
-        std::cout << "Const id -> " << const_id << '\n';
-        std::cout << "Marker " << marker << '\n';
-    }*/
 
     Label(const std::string& type)
     {
@@ -228,7 +204,6 @@ public:
     
     ~Label()
     {
-        // std::cout << "WORK DESCRUCTOR LABEL" << '\n';
         if (id != nullptr)
         {
             delete id;

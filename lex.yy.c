@@ -609,89 +609,89 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "lexer.l"
 #line 3 "lexer.l"
-#include <iostream>
-#include <string>
-#include <list>
-#include <cstring>
-#include <stdexcept>
-#include <cmath>
-#include "Prog.h"
-#include "parser.tab.h"
+    #include <iostream>
+    #include <string>
+    #include <list>
+    #include <cstring>
+    #include <stdexcept>
+    #include <cmath>
+    #include "Prog.h"
+    #include "parser.tab.h"
 
-    
-void yyerror(char *);
-std::string* buffer;
-bool flag;
+        
+    void yyerror(char *);
+    std::string* buffer;
+    bool flag;
 
-inline int OCTAL_TO_DEC(const std::string& OCTAL)
-{
-    int k;
-    int result = 0;
-    size_t len_OCTAL = OCTAL.size() - 1;
-    size_t len = OCTAL.size();
-    
-    for (size_t i = 0; i != len; i++)
+    inline int OCTAL_TO_DEC(const std::string& OCTAL)
     {
-        switch (OCTAL[i])
+        int k;
+        int result = 0;
+        size_t len_OCTAL = OCTAL.size() - 1;
+        size_t len = OCTAL.size();
+        
+        for (size_t i = 0; i != len; i++)
         {
-            case '1': k = 1; break;
-            case '2': k = 2; break;
-            case '3': k = 3; break;
-            case '4': k = 4; break;
-            case '5': k = 5; break;
-            case '6': k = 6; break;
-            case '7': k = 7; break;
-            case '0': k = 0; break;
-                
-            default:
-                throw std::bad_cast();
+            switch (OCTAL[i])
+            {
+                case '1': k = 1; break;
+                case '2': k = 2; break;
+                case '3': k = 3; break;
+                case '4': k = 4; break;
+                case '5': k = 5; break;
+                case '6': k = 6; break;
+                case '7': k = 7; break;
+                case '0': k = 0; break;
+                    
+                default:
+                    throw std::bad_cast();
+            }
+            
+            result += k * std::pow(8,len_OCTAL);
+            len_OCTAL--;
         }
         
-        result += k * std::pow(8,len_OCTAL);
-        len_OCTAL--;
+        return result;
     }
-    
-    return result;
-}
 
-inline int HEX_TO_DEC(const std::string& hex, bool& flag)
-{
-    int k;
-    int result = 0;
-    size_t len_hex = hex.size() - 1;
-    size_t len = hex.size();
-    
-    for (size_t i = 0; i != len; i++)
+    inline int HEX_TO_DEC(const std::string& hex, bool& flag)
     {
-        switch (hex[i])
+        int k;
+        int result = 0;
+        size_t len_hex = hex.size() - 1;
+        size_t len = hex.size();
+        
+        for (size_t i = 0; i != len; i++)
         {
-            case 'A': k = 10; flag = 1; break;
-            case 'B': k = 11; flag = 1; break;
-            case 'C': k = 12; flag = 1; break;
-            case 'D': k = 13; flag = 1; break;
-            case 'E': k = 14; flag = 1; break;
-            case 'F': k = 15; flag = 1; break;
-            case '1': k = 1; break;
-            case '2': k = 2; break;
-            case '3': k = 3; break;
-            case '4': k = 4; break;
-            case '5': k = 5; break;
-            case '6': k = 6; break;
-            case '7': k = 7; break;
-            case '8': k = 8; break;
-            case '9': k = 9; break;
-            case '0': k = 0; break;
-                
-            default:
-                throw std::bad_cast();
+            switch (hex[i])
+            {
+                case 'A': k = 10; flag = 1; break;
+                case 'B': k = 11; flag = 1; break;
+                case 'C': k = 12; flag = 1; break;
+                case 'D': k = 13; flag = 1; break;
+                case 'E': k = 14; flag = 1; break;
+                case 'F': k = 15; flag = 1; break;
+                case '1': k = 1; break;
+                case '2': k = 2; break;
+                case '3': k = 3; break;
+                case '4': k = 4; break;
+                case '5': k = 5; break;
+                case '6': k = 6; break;
+                case '7': k = 7; break;
+                case '8': k = 8; break;
+                case '9': k = 9; break;
+                case '0': k = 0; break;
+                    
+                default:
+                    throw std::bad_cast();
+            }
+            
+            result += k * std::pow(16,len_hex);
+            len_hex--;
         }
         
-        result += k * std::pow(16,len_hex);
-        len_hex--;
+        return result;
     }
-    
-    return result;
-}
 
  
 #line 698 "lex.yy.c"
@@ -1000,117 +1000,117 @@ YY_RULE_SETUP
 case 4:
 YY_RULE_SETUP
 #line 109 "lexer.l"
-return PLEASE;
+{ yylloc.last_line = yylloc.first_line = yylineno; return PLEASE; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
 #line 110 "lexer.l"
-return THANKS;
+{ yylloc.last_line = yylloc.first_line = yylineno; return THANKS; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
 #line 111 "lexer.l"
-return VAR;
+{ yylloc.last_line = yylloc.first_line = yylineno; return VAR; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 112 "lexer.l"
-return LOGITIZE;
+{ yylloc.last_line = yylloc.first_line = yylineno; return LOGITIZE; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
 #line 113 "lexer.l"
-return DIGITIZE;
+{ yylloc.last_line = yylloc.first_line = yylineno; return DIGITIZE; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 114 "lexer.l"
-return SIZE;
+{ yylloc.last_line = yylloc.first_line = yylineno; return SIZE; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
 #line 115 "lexer.l"
-return REDUCE;
+{ yylloc.last_line = yylloc.first_line = yylineno; return REDUCE; } 
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 116 "lexer.l"
-return EXTENED;
+{ yylloc.last_line = yylloc.first_line = yylineno; return EXTENED; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
 #line 117 "lexer.l"
-return NOT;
+{ yylloc.last_line = yylloc.first_line = yylineno; return NOT; } 
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 118 "lexer.l"
-return AND;
+{ yylloc.last_line = yylloc.first_line = yylineno; return AND; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 119 "lexer.l"
-return MXTRUE;
+{ yylloc.last_line = yylloc.first_line = yylineno; return MXTRUE; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
 #line 120 "lexer.l"
-return MXFALSE;
+{ yylloc.last_line = yylloc.first_line = yylineno; return MXFALSE; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 121 "lexer.l"
-return FOR;
+{ yylloc.last_line = yylloc.first_line = yylineno; return FOR; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 122 "lexer.l"
-return BOUNDARY;
+{ yylloc.last_line = yylloc.first_line = yylineno; return BOUNDARY; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 123 "lexer.l"
-return STEP;
+{ yylloc.last_line = yylloc.first_line = yylineno; return STEP; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
 #line 124 "lexer.l"
-return SWITCH;
+{ yylloc.last_line = yylloc.first_line = yylineno; return SWITCH; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 125 "lexer.l"
-return DO;
+{ yylloc.last_line = yylloc.first_line = yylineno; return DO; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
 #line 126 "lexer.l"
-return GET;
+{ yylloc.last_line = yylloc.first_line = yylineno; return GET; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
 #line 127 "lexer.l"
-return TASK;
+{ yylloc.last_line = yylloc.first_line = yylineno; return TASK; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
 #line 128 "lexer.l"
-return R_RIGHT;
+{ yylloc.last_line = yylloc.first_line = yylineno; return R_RIGHT; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
 #line 129 "lexer.l"
-return R_LEFT;
+{ yylloc.last_line = yylloc.first_line = yylineno; return R_LEFT; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
 #line 130 "lexer.l"
-return GET_E;
+{ yylloc.last_line = yylloc.first_line = yylineno; return GET_E; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
 #line 131 "lexer.l"
-return MOVE;
+{ yylloc.last_line = yylloc.first_line = yylineno; return MOVE; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
@@ -1120,12 +1120,12 @@ return FINDEXIT;
 case 28:
 YY_RULE_SETUP
 #line 133 "lexer.l"
-return RESULT;
+{ yylloc.last_line = yylloc.first_line = yylineno; return RESULT; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
 #line 134 "lexer.l"
-return PRINT;
+{ yylloc.last_line = yylloc.first_line = yylineno; return PRINT; }
 	YY_BREAK
 case 30:
 /* rule 30 can match eol */
@@ -1153,28 +1153,27 @@ YY_RULE_SETUP
                                 std::strcpy(yylval.iName , yytext);
                                 yylval.iName[leng] = '\0';
 
-                                // std::cout <<"       iName   " << yylval.iName << '\n';
                                 return VARIABLE;
                             }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 152 "lexer.l"
+#line 151 "lexer.l"
 {
                             yylloc.last_line = yylloc.first_line = yylineno;
                             yylval.iValue = std::atoi(yytext);
-                            // std::cout << "DEC " <<  yylval.iValue << '\n';
+                   
                             return INTEGER;
                         }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 160 "lexer.l"
+#line 159 "lexer.l"
 {
                             yylloc.last_line = yylloc.first_line = yylineno;
                             buffer = new std::string(yytext);
 
-                            // std::cout << "OCTAL " <<  *buffer << '\n';
+                         
                             int dec = -1;
                             try
                             {
@@ -1188,34 +1187,32 @@ YY_RULE_SETUP
                             delete buffer;
 
                             yylval.iValue = dec;
-                            // std::cout << "DEC " <<  yylval.iValue << '\n';
+                          
                             return INTEGER;
                         }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 181 "lexer.l"
+#line 180 "lexer.l"
 {
                             yylloc.last_line = yylloc.first_line = yylineno;
                             yylval.iValue = std::atoi(yytext);
-                            // std::cout << "DEC " <<  yylval.iValue << '\n';
+                  
                             return INTEGER;
                         }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 190 "lexer.l"
+#line 189 "lexer.l"
 { BEGIN(HEX); }
 	YY_BREAK
 
 case 38:
 YY_RULE_SETUP
-#line 192 "lexer.l"
+#line 191 "lexer.l"
 {
                         yylloc.last_line = yylloc.first_line = yylineno;
                         buffer = new std::string(yytext);
-
-                        // std::cout << "HEX " << *buffer << '\n';
 
                         int dec = -1;
                         try
@@ -1231,25 +1228,24 @@ YY_RULE_SETUP
                         
 
                         yylval.iValue = dec;
-                        //std::cout << "DEC " <<  yylval.iValue << '\n';
+
                         BEGIN(INITIAL);
                         return INTEGER;
                     }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 216 "lexer.l"
+#line 213 "lexer.l"
 { std::cerr << "Undefine symbol in HEX" << '\n'; }
 	YY_BREAK
 
 case 40:
 YY_RULE_SETUP
-#line 221 "lexer.l"
+#line 218 "lexer.l"
 {
                         yylloc.last_line = yylloc.first_line = yylineno;
                         buffer = new std::string(yytext);
 
-                        // std::cout << "HEX " << *buffer << '\n';
 
                         flag = 0;
                         int dec = -1;    
@@ -1269,13 +1265,13 @@ YY_RULE_SETUP
                         
 
                         yylval.iValue = dec;
-                        // std::cout << "DEC " <<  yylval.iValue << '\n';
+                        
                         return INTEGER;
                     }  
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 251 "lexer.l"
+#line 247 "lexer.l"
 {
                         yylloc.last_line = yylloc.first_line = yylineno;
                         return *yytext;
@@ -1283,7 +1279,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 255 "lexer.l"
+#line 251 "lexer.l"
 {
                         yylloc.last_line = yylloc.first_line = yylineno;
                         return *yytext;
@@ -1291,20 +1287,20 @@ YY_RULE_SETUP
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 262 "lexer.l"
+#line 258 "lexer.l"
 ;       /* ignore whitespace */
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 264 "lexer.l"
+#line 260 "lexer.l"
 yyerror("Unknown character");
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 265 "lexer.l"
+#line 261 "lexer.l"
 ECHO;
 	YY_BREAK
-#line 1308 "lex.yy.c"
+#line 1304 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(HEX):
 	yyterminate();
@@ -2314,7 +2310,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 265 "lexer.l"
+#line 261 "lexer.l"
 
 
 

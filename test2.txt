@@ -2,4 +2,11 @@ TASK FINDEXIT
 	VAR name = 
 	VAR name [
 	VAR
+	VAR name1 [2, 2] = 1
+	VAR name2 = 1
+	name2 = 2 * name1 [1
 RESULT
+
+TASK func var1 [var2]
+	VAR var3 = 1
+RESULT var3
