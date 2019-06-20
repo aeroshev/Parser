@@ -11,6 +11,8 @@
 #include <iterator>
 #include <utility>
 
+//Repair argument in function DO TASK
+//Repair for bool - * /
 void COMP_ERROR(const char*);
 
 
@@ -247,15 +249,11 @@ public:
 
     void civility(int count)
     {
-        // std::cout << "civility" << '\n';
-        // std::cout << "count -> " << count << '\n';
         courtesy += count;
     }
 
     void check_hysteria()
     {
-        // std::cout << "level_hysteria -> " << level_hysteria << '\n';
-        // std::cout << "courtesy -> " << courtesy << '\n';
         if (courtesy < edge_courtesy)
         {
             if (level_hysteria > courtesy) 
@@ -278,25 +276,6 @@ public:
     {
         coordinate.first += gaze_direction.first;
         coordinate.second += gaze_direction.second;
-
-        // for (size_t i = 0; i != rows; i++)
-        // {
-        //     for (size_t j = 0; j != columns; j++)
-        //     {
-        //         if (coordinate.first == i && coordinate.second == j)
-        //             std::cout << "R" << ' ';
-        //         else
-        //             std::cout << map[i][j] << ' ';
-        //     }
-        //     std::cout << '\n';
-        // }
-
-        // std::cout << "Empty: " << Cell::Empty << " Wall: " << Cell::Wall << " Exit: " << Cell::Exit << '\n';
-
-        // std::cout << "MAP current -> " << map[coordinate.first][coordinate.second] << '\n';
-        // std::cout << "MAP gaze -> " << map[gaze_direction.first][gaze_direction.second] << '\n';
-        // std::cout << "coordinate -> first: " << coordinate.first << " coordinate -> second: " << coordinate.second << '\n';
-        // std::cout << "gaze_coordinate -> first: " << gaze_direction.first << " coordinate -> second: " << gaze_direction.second << '\n';
 
 
         if (map[coordinate.first][coordinate.second] == Cell::Wall)
@@ -368,13 +347,12 @@ public:
         }
     }
     
-    Label get_environment()//to do
+    Label get_environment()
     {
-        ///std::cout << "GET_E" << '\n';
         level_hysteria++;
         Label field;
         
-        int N = 5;//setting this number
+        int N = 5;
         if (level_hysteria < 7)
             N = 5;
         else
@@ -396,7 +374,7 @@ public:
 
         size_t sz = (N * N) * 2;
         field.id->value.resize(sz);
-        //std::cout << "SIZE -> " << sz << '\n';
+
         for (size_t i = 0; i != sz; i++)
         {
             field.id->value[i] = 0;
@@ -404,8 +382,7 @@ public:
         size_t line = N;
         N = (N - 1) / 2;
 
-        //std::cout << "ROWS " << rows << '\n';
-        //std::cout << "COLUMNS " << columns << '\n';
+  
 
         size_t i = coordinate.first;
         unsigned int count_up = 0;
@@ -439,59 +416,25 @@ public:
             count_right++;
         }
 
-        // std::cout << "COUNT RIGHT " << count_right << '\n';
-        // std::cout << "COUNT LEFT " << count_left << '\n';
-        // std::cout << "COUNT UP " << count_up << '\n';
-        // std::cout << "COUNT DOWN " << count_down << '\n';
 
         std::pair<size_t, size_t> scan = std::make_pair(coordinate.first - count_up, coordinate.second - count_left);
         size_t walls = (N - count_up) * line + (N - count_left);
         size_t doors = field.id->shift.front() + ((N - count_up) * line) + (N - count_left);
 
-        // std::cout << "WALL -> " << walls << '\n';
-        // std::cout << "DOOR -> " << doors << '\n';
 
         size_t length_horizont = count_left + count_right + 1;
         size_t length_vertical = count_up + count_down + 1;
 
 
-        // while (scan.second != (coordinate.second + count_down))
-        // {
-        //     std::cout << "SCAN.SECOND -> " << scan.second << '\n';
-        //     while (scan.first != (coordinate.first + count_right))
-        //     {
-        //         std::cout << "SCAN.FIRST -> " << scan.first << '\n';
-        //         std::cout << "current cell: first-> " << scan.first << " second-> " << scan.second << '\n';
-        //         if (map[scan.first][scan.second] == Cell::Wall)
-        //         {
-        //             std::cout << "wall" << '\n';
-        //             field.id->value[walls] = 1;
-        //         }
-        //         if (map[scan.first][scan.second] == Cell::Exit)
-        //         {
-        //             field.id->value[doors] = 2;
-        //             level_hysteria--;
-        //         }
-        //         walls++;
-        //         doors++;
-        //         scan.first++;
-        //     }
-        //     scan.first = coordinate.first - count_left;
-        //     scan.second++;
-        //     walls += (N - count_left);
-        //     doors += (N - count_left);
-        // }
+
 
         for (size_t i = 0; i != length_vertical; i++)
         {
             for (size_t j = 0; j != length_horizont; j++)
             {
-                // std::cout << "WALL: " << walls << '\n';
-                // std::cout << "current cell: first-> " << scan.first << " second-> " << scan.second << '\n';
-                // std::cout << "MAP -> " << map[scan.first][scan.second] << '\n';
+ 
                 if (map[scan.first][scan.second] == Cell::Wall)
                 {
-                    // std::cout << "wall -> " << walls << '\n';
 
                     field.id->value[walls] = 1;
                 }
@@ -502,12 +445,11 @@ public:
                 }
                 walls++;
                 doors++;
-                //scan.first++;
+
                 scan.second++;
             }
 
-            //scan.first = coordinate.first - count_left;
-            //scan.second++;
+
             scan.second = coordinate.second - count_left;
             scan.first++;
             walls += (N - count_left) + (N - count_right);
@@ -515,6 +457,7 @@ public:
 
         }
 
+        //PRINT_IN_COUT----------------------------------------------
         for (size_t i = 0; i != rows; i++)
         {
             for (size_t j = 0; j != columns; j++)
@@ -527,11 +470,11 @@ public:
             std::cout << '\n';
         }
         std::cout << '\n';
-  
+        //---------------------------------------------------------
 
 
 
-        // std::cout << "SZ -> " << field.id->value.size() << '\n';
+        //PRINT_IN_FILE--------------------------------------------
         std::ofstream file("output.txt");
         for (int i = 0; i != line * line; i += line)
         {
@@ -542,7 +485,7 @@ public:
             file << '\n';
         }
         file << '\n';
-        // std::cout << "SHIFT " << field.id->shift.front() << '\n';
+        
         for (int i = field.id->shift.front(); i != field.id->value.size( ); i += line)
         {
             for (int j = 0; j != line; j++)
@@ -551,6 +494,8 @@ public:
             }
             file << '\n';
         }
+        //---------------------------------------------------------
+
         return field;   
     }
 };
@@ -567,7 +512,6 @@ private:
     
     Robot T800;
 public:
-    //std::list<int> enumeration;
     std::list<std::string> args;
     std::list<Vertex*> exprl;
     
@@ -580,7 +524,6 @@ public:
 
     Vertex* courtesy(int count, Vertex* stmt)
     {
-        //std::cout << "courtesy" << '\n';
         T800.civility(count);
         return stmt;
     }
@@ -595,7 +538,6 @@ public:
             element.second.clear();
         }
         idTable.clear();
-        //enumeration.clear();
         args.clear();
         exprl.clear();
         
@@ -618,15 +560,6 @@ public:
         
         return node;
     }
-    
-    // void putFunc(const std::string& name, const std::string& decl, const std::list<std::string>& decl_list, Vertex* stmt, const std::string& end)
-    // {
-    //     funcTable.emplace(std::make_pair(std::string(name), Descriptior_func(decl, decl_list, stmt, end)));
-    // }
-    // void putFunc(const std::string& name, const std::string& decl, Vertex* stmt, const std::string& end)
-    // {
-    //     funcTable.emplace(std::make_pair(std::string(name), Descriptior_func(decl, stmt, end)));
-    // }
 
     void putFunc(const std::string& name, const std::string& decl, Vertex* stmt, const std::string& end)
     {
@@ -726,11 +659,9 @@ public:
     {
         T800.check_hysteria();
 
-        //std::cout << "Execute" << '\t';
 
         if (vertex->type == "PRINT")//return notfing
         {
-            // std::cout << "PRINT" << '\n';
             Node* pNode = static_cast<Node*>(vertex);
 
             Label config_var = execute(pNode->leafs[0]);
@@ -746,21 +677,6 @@ public:
             else
                 ptr = config_var.id;
 
-            // auto appeal_iter = pNode->enum_list.begin();
-            // auto ptr_itesr = ptr->enum_dim.begin();
-            // auto ptr_shift = ptr->shift.begin();
-            
-            // for (size_t i = 0; i != sz; i++)
-            // {
-            //     if (*appeal_iter > *ptr_iter || *appeal_iter < 1)
-            //         COMP_ERROR("OVERTAKE SIZE INDEX");
-                
-            //     shift += (*appeal_iter - 1)*(*ptr_shift);
-                
-            //     appeal_iter++;
-            //     ptr_iter++;
-            //     ptr_shift++;
-            // }
 
             std::cout << "------------------------------------" << '\n';
 
@@ -775,15 +691,12 @@ public:
         }
         if (vertex->type == "ASSIGN")//return nothing
         {
-            // std::cout << "ASSIGN" << std::endl;
-
             Node* asgnNode = static_cast<Node*>(vertex);
             Label config;
 
             Label config_var = execute(asgnNode->leafs[0]);
             Label config_expr = execute(asgnNode->leafs[1]);
             
-            // std::cout << "COMPLETE EXEC" << '\n';
             if (config_var.marker != status::variable || config_var.const_id == nullptr)
               COMP_ERROR("SOMETHING WRONG! DON'T HAVE VARIABLE");
 
@@ -796,13 +709,8 @@ public:
                 config_var.const_id->value.swap(config_expr.id->value);
                 config_var.const_id->enum_dim.swap(config_expr.id->enum_dim);
                 config_var.const_id->shift.swap(config_expr.id->shift);
-
-                      //  std::copy(config_expr.id->value.begin(), config_expr.id->value.end(), config_var.const_id->value.begin());
-                      // std::copy(config_expr.id->enum_dim.begin(), config_expr.id->enum_dim.end(), config_var.const_id->enum_dim.begin());
-                      // std::copy(config_expr.id->shift.begin(), config_expr.id->shift.end(), config_var.const_id->shift.begin());
         
                 config_var.const_id->type = config_expr.id->type;
-                      //config_var.const_id->name = config_expr.id->name;
         
                 return config;
             }
@@ -811,70 +719,35 @@ public:
                 if (config_var.const_id->name == config_expr.const_id->name)
                     return config;
 
-                //std::cout << "VAR - VAR" << '\n';
 
                 config_var.const_id->value.clear();
                 config_var.const_id->enum_dim.clear();
                 config_var.const_id->shift.clear();
                    
-                //std::cout << "Copy value" << '\n';        
+
                 std::copy(config_expr.const_id->value.begin(), config_expr.const_id->value.end(), std::back_inserter(config_var.const_id->value));
-                //std::cout << "Copy enu_dim" << '\n'; 
                 std::copy(config_expr.const_id->enum_dim.begin(), config_expr.const_id->enum_dim.end(), std::back_inserter(config_var.const_id->enum_dim));
-                //std::cout << "Copy shift" << '\n'; 
-                //std::cout << "SIZE SHIFT -> " << config_var.const_id->shift.size() << '\n';
                 std::copy(config_expr.const_id->shift.begin(), config_expr.const_id->shift.end(), std::back_inserter(config_var.const_id->shift));
-                //std::cout << "complete copy" << '\n';
+
         
                 config_var.const_id->type = config_expr.const_id->type;
-                //config_var.const_id->name = config_expr.const_id->name;
         
                 return config;
             }
-                  // if (config_expr.marker == status::constant)
-                  // {
-                  //       config_var.const_id->value.clear();
-                  //       config_var.const_id->enum_dim.clear();
-                  //       config_var.const_id->shift.clear();
-
-                  //       config_var.const_id->type = "INT";
-
-                  //       config_var.const_id->value.push_back(config_expr.constant);
-                  //       config_var.const_id->enum_dim.push_back(1);
-                  //       config_var.const_id->shift.push_back(1);
-
-
-                  // }
-                  // if (config_expr.marker == status::boo)
-                  // {
-                  //       std::cout << "ASSIGN BOOL BLOCK" << '\n';
-                  //       config_var.const_id->value.clear();
-                  //       config_var.const_id->enum_dim.clear();
-                  //       config_var.const_id->shift.clear();
-
-                  //       config_var.const_id->type = "BOOL";
-
-                  //       config_var.const_id->value.push_back(config_expr.flag);
-                  //       config_var.const_id->enum_dim.push_back(1);
-                  //       config_var.const_id->shift.push_back(1);
-                  // }
 
             return config;
         }
         
         if (vertex->type == "VAR")//return nothing
-        {
-            // std::cout << "VAR" << '\n';
-            
+        {  
             Id* VarNode= static_cast<Id*>(vertex);
             std::string name = VarNode->name;
             
-            // std::cout << "FINDING" << '\n';
+           
             
             if(idTable[NameSpace.top()].find(name) != idTable[NameSpace.top()].end())
                 COMP_ERROR("ID ALREADY DECLARED IN THIS SCOPE");
             
-            // std::cout << "CHECK" << '\n';
             
             //Search this in storage
             auto element = storageID.begin();
@@ -887,10 +760,6 @@ public:
             //Check
             if (element == storageID.end())
                 COMP_ERROR("FATAL ERROR");
-
-
-            // std::cout << "FULLING LITERAL" << '\n';
-            // std::cout << element->literal << '\n';
 
 
             //Calculate size variable
@@ -924,26 +793,9 @@ public:
                 }
             }
 
-            // for (const auto& cur : element->enum_dim)
-            // {
-            //     std::cout << "ENUM DIM " << cur << '\n';
-            // }
-
 
             element->expr_dim.clear();
 
-
-
-            // if (!element->enum_dim.empty())
-            // {
-            //     for (const auto& current : element->enum_dim)
-            //     {
-            //         if (current < 1)
-            //             COMP_ERROR("invalid value");
-
-            //         dim *= current;
-            //     }
-            // }
             
             element->value.resize(dim);
 
@@ -952,11 +804,7 @@ public:
             {
                 current = element->literal;
             }
-            // for (size_t i = 0; i != element.value.size(); i++)
-            // {
-            //     element.value[i] = element.literal;
-            //     //std::cout << element.value[i] << '\n';
-            // }
+
             
             //Fill shigt field
             for (const auto& current : element->enum_dim)
@@ -972,31 +820,18 @@ public:
             if (!result.second)
                 COMP_ERROR("FATAL ERROR");
 
-            // std::cout << "SIZE " << result.first->second->value.size() << '\n';
-            //----------------------------------####
-            // for (const auto& cur : storageID)
-            // {
-            //     std::cout << '\n';
-            //     for (size_t i = 0; i != cur.second.value.size(); i++)
-            //         std::cout << cur.second.value[i] << '\n';
-            // }
-            //-------------------------------###
             
             Label config;
             return config;
         }
         if (vertex->type == "ID")//return reference of value
         {
-            // std::cout << "ID" << '\n';
             Label config;
             Id* varNode = static_cast<Id*>(vertex);
             
             auto element = idTable[NameSpace.top()].find(varNode->name);
             if (element != idTable[NameSpace.top()].end())
             {
-                // std::cout << "Name variable: " << element->first << '\n';
-                // std::cout << "Size value: " << element->second->value.size() << '\n';
-
                 config.const_id = element->second;
                 config.marker = status::variable;
             }
@@ -1030,34 +865,15 @@ public:
         }
         if (vertex->type == "VALUE")//return temp value
         {
-            // std::cout << "VALUE" << '\n';
-            //Label config;
             Value* varNode = static_cast<Value*>(vertex);
 
-            // config.id = new Descriptior_Value(varNode->type_value);
-            // config.id->shift.push_back(1);
-
-            // std::cout << "TYPE -> " << varNode->type_value << '\n';
-            
             Label config(varNode->type_value);
             config.id->value.push_back(varNode->value);
 
-            //std::cout <<  config.id->value.size() << '\n';
-            //std::cout <<  config.id->value[0] << '\n';
-
-            // config.marker = status::temp_variable;
-
-            
-            // config.constant = varNode->value;
-            
-            // config.marker = status::constant;
-             //std::cout << "Adress config " << config.id << '\n';
             return config;
         }
         if (vertex->type == "APPEAL")//return temp value
         {
-            // std::cout << "APPEAL" << '\n';
-            
             Appeal* apNode = static_cast<Appeal*>(vertex);
             
             auto element = idTable[NameSpace.top()].find(apNode->name);
@@ -1065,8 +881,6 @@ public:
                 COMP_ERROR("NOT FOUND THIS VARIABLE");
             
             auto var = element->second;
-            
-            // std::cout << "SZ EXPR -> " << apNode->expr_list.size() << '\n';
           
 
             Descriptior_Value* ptr_expr = nullptr;
@@ -1096,14 +910,6 @@ public:
                 }
             }
 
-            // std::cout << "SZ ENUM DIM -> " << var->enum_dim.size() << '\n';
-            // std::cout << "SZ ENUM LIST -> " << apNode->enum_list.size() << '\n';
-
-            // for (const  auto& cur : apNode->enum_list)
-            // {
-            //     std::cout << "ENUM_LIST -> " << cur << '\n';
-            // }
-
             if (apNode->enum_list.size() > var->enum_dim.size())
                 COMP_ERROR("too many meanings");
             
@@ -1127,41 +933,29 @@ public:
                 var_shift++;
             }
             
+
             if (var->type == "INT")
             {
-                // config.constant = var->value[shift];
-                // config.marker = status::constant;
 
-                // config.id = new Descriptior_Value("INT");
-                // config.id->shift.push_back(1);
                 Label config("INT");
                 config.id->value.push_back(var->value[shift]);
 
-                //std::cout <<  config.id->value.size() << '\n';
-                //std::cout <<  config.id->value[0] << '\n';
-
                 return config;
-                // config.marker = status::temp_variable;
             }
             else if (var->type == "BOOL")
             {
-                // config.flag = var->value[shift];
-                // config.marker = status::boo;
-
-                // config.id = new Descriptior_Value("BOOL");
-                // config.id->shift.push_back(1);
 
                 Label config("BOOL");
                 config.id->value.push_back(var->value[shift]);
+
                 return config;
-                // config.marker = status::temp_variable;
             }
             else
             {
                 COMP_ERROR("UNDEFINE ERROR");
             }
-             //std::cout << "Adress config " << config.id << '\n';
-             Label config_;
+            
+            Label config_;
             return config_;
         }
         if (vertex->type == "APPEAL_A")//return temp variable //upgrade check 
@@ -1201,8 +995,7 @@ public:
                 }
             }
 
-            // std::cout << "SZ ENUM DIM -> " << var->enum_dim.size() << '\n';
-            // std::cout << "SZ ENUM LIST -> " << apNode->enum_list.size() << '\n';
+
             if (apNode->enum_list.size() > var->enum_dim.size())
                 COMP_ERROR("too many meanings");
             
@@ -1262,9 +1055,9 @@ public:
             Label config;
             return config;
         }
-        if (vertex->type == "+")//return temp variable?
+        if (vertex->type == "+")
         {
-            // std::cout << "+" << std::endl;
+
             Label config;
             Node* plusNode = static_cast<Node*>(vertex);
             
@@ -1273,20 +1066,6 @@ public:
             
             Descriptior_Value* ptr1 = nullptr, *ptr2 = nullptr;
             
-            // if (config_1.marker == status::constant && config_2.marker == status::constant)
-            // {
-            //     config.constant = config_1.constant + config_2.constant;
-                
-            //     config.marker = status::constant;
-            //     return config;
-            // }
-            // if (config_1.marker == status::boo && config_2.marker == status::boo)
-            // {
-            //     config.flag = config_1.flag + config_2.flag;
-                
-            //     config.marker = status::boo;
-            //     return config;
-            // }
 
             if (config_1.id == nullptr)
                 if(config_1.const_id == nullptr)
@@ -1321,7 +1100,6 @@ public:
                 for (size_t i = 0; i != sz; i++)
                 {
                     config.id->value[i] = ptr1->value[i] + ptr2->value[i];
-                    //std::cout << config.id->value[i] << '\n';
                 }
             }
             if (ptr1->type == "BOOL")
@@ -1342,7 +1120,6 @@ public:
         }
         if (vertex->type == "*")//return temp variable
         {
-            // std::cout << "*" << '\n';
             Label config;
             Node* plusNode = static_cast<Node*>(vertex);
             
@@ -1350,25 +1127,6 @@ public:
             Label config_2 = execute(plusNode->leafs[1]);
             
             Descriptior_Value* ptr1 = nullptr, *ptr2 = nullptr;
-
-            // std::cout << "Adress id_1 " << config_1.id << '\n';
-            // std::cout << "Adress const_id_1 " << config_1.const_id << '\n';
-
-            
-            // if (config_1.marker == status::constant && config_2.marker == status::constant)
-            // {
-            //     config.constant = config_1.constant * config_2.constant;
-                
-            //     config.marker = status::constant;
-            //     return config;
-            // }
-            // if (config_1.marker == status::boo && config_2.marker == status::boo)
-            // {
-            //     config.flag = config_1.flag * config_2.flag;
-                
-            //     config.marker = status::boo;
-            //     return config;
-            // }
 
             if (config_1.id == nullptr)
                 if(config_1.const_id == nullptr)
@@ -1398,7 +1156,6 @@ public:
             config.id = new Descriptior_Value(ptr1->type);
             config.id->value.resize(sz);
             
-            // std::cout << "Size " << sz << '\n';
             for (size_t i = 0; i != sz; i++)
             {
                 config.id->value[i] = ptr1->value[i] * ptr2->value[i];
@@ -1420,20 +1177,6 @@ public:
             
             Descriptior_Value* ptr1 = nullptr, *ptr2 = nullptr;
             
-            // if (config_1.marker == status::constant && config_2.marker == status::constant)
-            // {
-            //     config.constant = config_1.constant - config_2.constant;
-                
-            //     config.marker = status::constant;
-            //     return config;
-            // }
-            // if (config_1.marker == status::boo && config_2.marker == status::boo)
-            // {
-            //     config.flag = config_1.flag - config_2.flag;
-                
-            //     config.marker = status::boo;
-            //     return config;
-            // }
 
             if (config_1.id == nullptr)
                 if(config_1.const_id == nullptr)
@@ -1481,20 +1224,6 @@ public:
             
             Descriptior_Value* ptr1 = nullptr, *ptr2 = nullptr;
             
-            // if (config_1.marker == status::constant && config_2.marker == status::constant)
-            // {
-            //     config.constant = config_1.constant / config_2.constant;
-                
-            //     config.marker = status::constant;
-            //     return config;
-            // }
-            // if (config_1.marker == status::boo && config_2.marker == status::boo)
-            // {
-            //     config.flag = config_1.flag / config_2.flag;
-                
-            //     config.marker = status::boo;
-            //     return config;
-            // }
 
             if (config_1.id == nullptr)
                 if(config_1.const_id == nullptr)
@@ -1585,36 +1314,18 @@ public:
             {
                 if (config.id->value[0] == 0)
                 {
-                    // config_res.id = new Descriptior_Value("BOOL");
-
                     config_res.id->shift.push_back(1);
-
-                    // config_res.marker = status::temp_variable;
                 }
                 else
                 {
-                    // config_res.id = new Descriptior_Value("BOOL");
                     config_res.id->shift.push_back(0);
-
-                    // config_res.marker = status::temp_variable;
                 }
             }
             else
             {
                 std::cout << "It's not single number" << '\n';
             }
-            
-            // if (config.marker == status::constant)
-            // {
-            //     if (config.constant == 0)
-            //     {
-       
-            //     }
-            //     else
-            //     {
-            //         config.flag = "false";
-            //     }
-            // }
+
             
             return config_res;
         }
@@ -1624,14 +1335,7 @@ public:
             Node* notNode = static_cast<Node*>(vertex);
             
             Label config = execute(notNode->leafs[0]);
-            
-            // if (config.marker == status::boo)
-            // {
-            //     temp_config.flag = not config.flag;
-                
-            //     temp_config.marker = status::boo;
-            //     return temp_config;
-            // }
+
             
             Descriptior_Value* ptr = nullptr;
             
@@ -1669,13 +1373,6 @@ public:
             Label config_1 = execute(andNode->leafs[0]);
             Label config_2 = execute(andNode->leafs[1]);
             
-            // if (config_1.marker == status::boo && config_2.marker == status::boo)
-            // {
-            //     config.flag = config_1.flag and config_2.flag;
-                
-            //     config.marker = status::boo;
-            //     return config;
-            // }
             
             Descriptior_Value* ptr1 = nullptr, *ptr2 = nullptr;
             
@@ -1720,20 +1417,10 @@ public:
             return config;
         }
         if (vertex->type == "MXTRUE")//return temp variable
-        {
-            // std::cout << "MXTRUE" << '\n';
-            
+        {           
             Node* mxNode = static_cast<Node*>(vertex);
             
             Label config = execute(mxNode->leafs[0]);
-            
-            // if (config.marker == status::boo)
-            // {
-            //     temp_config.flag = config.flag;
-                
-            //     temp_config.marker = status::boo;
-            //     return temp_config;
-            // }
             
             Descriptior_Value* ptr = nullptr;
             
@@ -1756,8 +1443,6 @@ public:
                 if (ptr->value[i] == 1)
                     quantity++;
             }
-            //std::cout << "SZ " << sz << '\n';
-            //std::cout << "quantity " << quantity << '\n';
 
             Label temp_config;
             temp_config.id = new Descriptior_Value("BOOL");
@@ -1773,9 +1458,6 @@ public:
                 temp_config.id->value.push_back(0);
             }
 
-            //std::cout << "RESULT MXTRUE " << temp_config.flag << '\n';
-            
-            //temp_config.marker = status::boo;
             return temp_config;
         }
         if (vertex->type == "MXFALSE")//return temp variable
@@ -1784,13 +1466,6 @@ public:
             
             Label config = execute(mxNode->leafs[0]);
             
-            // if (config.marker == status::boo)
-            // {
-            //     temp_config.flag = not config.flag;
-                
-            //     temp_config.marker = status::boo;
-            //     return temp_config;
-            // }
             
             Descriptior_Value* ptr = nullptr;
             
@@ -1814,12 +1489,6 @@ public:
                     quantity++;
             }
             
-            // if (quantity > sz - quantity)
-            //     temp_config.flag = true;
-            // else
-            //     temp_config.flag = false;
-            
-            // temp_config.marker = status::boo;
 
             Label temp_config;
             temp_config.id = new Descriptior_Value("BOOL");
@@ -1839,7 +1508,6 @@ public:
         }
         if (vertex->type == "FOR")//return notfing
         {
-            // std::cout << "FOR" << '\n';
 
             Node* forNode = static_cast<Node*>(vertex);
             
@@ -1851,9 +1519,6 @@ public:
             Descriptior_Value* edge = config_edge.const_id;
             Descriptior_Value* step = config_step.const_id;
 
-            // std::cout << "COUNTER -> " << config_counter.const_id->value[0] << '\n';
-            // std::cout << "EDGE -> " << config_edge.const_id->value[0] << '\n';
-            // std::cout << "STEP -> " << config_step.const_id->value[0] << '\n';
 
             if (counter->type != "INT")
                 COMP_ERROR("NE TOT TIP");
@@ -1879,14 +1544,10 @@ public:
                 else
                     forward = 0;
 
-               //std::cout << "FORWARD -> " << forward << '\n';
-
                 if (forward == 1)
                 {
                     while (counter->value[i] < edge->value[i])
                     {
-                        //std::cout << "COUNTER " << counter->value[i] << '\n';
-                        //std::cout << "EDGE " << edge->value[i] << '\n';
                         counter->value[i] += step->value[i];
                         execute(forNode->leafs[3]);
                     }
@@ -1915,19 +1576,12 @@ public:
         }
         if (vertex->type == "SWITCH")//return nothing
         {
-            //std::cout << "SWITCH" << '\n';
-
             Node* swNode = static_cast<Node*>(vertex);
             
             Label config_logic_expr = execute(swNode->leafs[0]);
             Label config_bool_1 = execute(swNode->leafs[1]);
             Label config_bool_2 = execute(swNode->leafs[3]);
 
-            //std::cout << "BOOL 1 -> " << config_bool_1.id->value[0] << '\n';
-            //std::cout << "BOOL 2 -> " << config_bool_2.id->value[0] << '\n';
-            
-            // if (config_logic_expr.marker != status::boo)
-            //     COMP_ERROR("DON'T HAVE RESULT");
 
             Descriptior_Value* ptr = nullptr;
             
@@ -1972,12 +1626,10 @@ public:
             
             
             NameSpace.push(callNode->func_name);
-            // std::cout << "NAMESPACE " << NameSpace.top() << '\n';
             
             
             for (const auto& argument : callNode->args)
             {
-                // auto store_el = storageID.find(argument);
                 auto element = storageID.begin();
                 while(element != storageID.end())
                 {
@@ -1990,29 +1642,12 @@ public:
                 if (!result.second)
                     COMP_ERROR("ERROR INSERTING ELEMENT");
             }
-
-            //-------------------------
-            // std::cout << "ELEMENT in " << NameSpace.top() << '\n';
-            // for (const auto& element : idTable[NameSpace.top()])
-            // {
-            //     std::cout << element.first << '\n';
-            // }
-            // std::cout << '\n';
-            //-------------------------
             
             
             execute(element_func->second.body);
             
-     
-            //debug print
-            // std::cout << "Stack NameSpace" << '\n';
-            // while (!NameSpace.empty())
-            // {
-            //     std::cout << NameSpace.top() << '\n';
-            //     NameSpace.pop();
-            // }
 
-            //piece of shit--------------------------------immedeatly rebuild!
+            //--------------------------------
             bool flag = false;
             auto args_list_func = element_func->second.args;
             size_t i = 0;
@@ -2062,28 +1697,18 @@ public:
         }
         if (vertex->type == "SIZE")//return tenp variable
         {
-            //std::cout << "SIZE" << '\n';
-
             Node* szNode = static_cast<Node*>(vertex);
             
             Label config_var = execute(szNode->leafs[0]);
-
-            //config_var.printMe();
             
             if (config_var.const_id == nullptr || config_var.marker != status::variable)
                 COMP_ERROR("DONT'T HAVE VALUE");
             
-            // Label config;
-            // config.id = new Descriptior_Value("INT");
-            // config.id->shift.push_back(1);
-            // config.marker = status::temp_variable;
 
             Label config("INT");
 
             config.id->value.push_back(config_var.const_id->value.size());
-            //std::cout << "SIZE OP " << config_var.const_id->enum_dim.size() << '\n';
-            
-            // config.marker = status::constant;
+
             
             return config;
         }
@@ -2117,7 +1742,6 @@ public:
         }
         if (vertex->type == "LOGITIZE")//return nothing
         {
-            //std::cout << "LOGITIZE" << '\n';
             Node* loeNode = static_cast<Node*>(vertex);
             
             Label config_var = execute(loeNode->leafs[0]);
@@ -2132,17 +1756,6 @@ public:
                 std::cout << "THIS IS ALREADY BOOL" << '\n';
                 return config_var;
             }
-            
-            //std::cout << "SIZE ARRAY " << config_var.const_id->value.size() << '\n';
-            // for (size_t i = 0; i != config_var.const_id->value.size(); i++)
-            // {
-            //     if (config_var.const_id->value[i] == 0)
-            //         config_var.const_id->value[i] = 0;
-            //     else
-            //         config_var.const_id->value[i] = 1;
-
-            //     //std::cout << config_var.const_id->value[i] << '\n';
-            // }
 
 
             for (auto& current : config_var.const_id->value)
@@ -2155,17 +1768,12 @@ public:
             
             config_var.const_id->type = "BOOL";
 
-            // for (const auto& elem : config_var.const_id->value)
-            // {
-            //     std::cout << elem << '\t';
-            // }
-            // std::cout << '\n';
+
             Label config;
             return config;
         }
         if (vertex->type == "REDUCE")//add check variable of empty
         {
-            //std::cout << "REDUCE" << '\n';
             Node* rNode = static_cast<Node*>(vertex);
             
             Label config;
@@ -2237,7 +1845,6 @@ public:
         }
         if (vertex->type == "MOVE")//return nothing
         {
-            //std::cout << "MOVE" << '\n';
             Cell status = T800.move();
             
             if (status == Cell::Wall)
@@ -2256,7 +1863,6 @@ public:
         }
         if (vertex->type == "ROTATE_LEFT")//return nothing
         {
-            //std::cout << "ROTATE_LEFT" << '\n';
             T800.rotate_left();
             
             Label config;
@@ -2264,7 +1870,6 @@ public:
         }
         if (vertex->type == "ROTATE_RIGHT")//return nothing
         {
-            //std::cout << "ROTATE_RIGHT" << '\n';
             T800.rotate_right();
             
             Label config;
@@ -2282,19 +1887,6 @@ public:
             Node* uNode = static_cast<Node*>(vertex);
             
             Label config = execute(uNode->leafs[0]);
-            
-            // if (config.marker == status::constant)
-            // {
-            //     config.constant = -config.constant;
-            //     return config;
-            // }
-            // if (config.marker == status::variable)
-            // {
-            //     for (auto& element : config.const_id->value)
-            //     {
-            //         element = -element;
-            //     }
-            // }
 
             if (config.marker == status::temp_variable)
             {

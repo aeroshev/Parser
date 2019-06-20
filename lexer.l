@@ -106,33 +106,33 @@
                             return BOOL;
                         }
 
-"PLEASE"        { yylloc.last_line = yylloc.first_line = yylineno; return PLEASE; }
-"THANKS"        { yylloc.last_line = yylloc.first_line = yylineno; return THANKS; }
-"VAR"           { yylloc.last_line = yylloc.first_line = yylineno; return VAR; }
-"LOGITIZE"      { yylloc.last_line = yylloc.first_line = yylineno; return LOGITIZE; }
-"DIGITIZE"      { yylloc.last_line = yylloc.first_line = yylineno; return DIGITIZE; }
-"SIZE"          { yylloc.last_line = yylloc.first_line = yylineno; return SIZE; }
-"REDUCE"        { yylloc.last_line = yylloc.first_line = yylineno; return REDUCE; } 
-"EXTENED"       { yylloc.last_line = yylloc.first_line = yylineno; return EXTENED; }
-"NOT"           { yylloc.last_line = yylloc.first_line = yylineno; return NOT; } 
-"AND"           { yylloc.last_line = yylloc.first_line = yylineno; return AND; }
-"MXTRUE"        { yylloc.last_line = yylloc.first_line = yylineno; return MXTRUE; }
-"MXFALSE"       { yylloc.last_line = yylloc.first_line = yylineno; return MXFALSE; }
-"FOR"           { yylloc.last_line = yylloc.first_line = yylineno; return FOR; }
-"BOUNDARY"      { yylloc.last_line = yylloc.first_line = yylineno; return BOUNDARY; }
-"STEP"          { yylloc.last_line = yylloc.first_line = yylineno; return STEP; }
-"SWITCH"        { yylloc.last_line = yylloc.first_line = yylineno; return SWITCH; }
-"DO"            { yylloc.last_line = yylloc.first_line = yylineno; return DO; }
-"GET"           { yylloc.last_line = yylloc.first_line = yylineno; return GET; }
-"TASK"          { yylloc.last_line = yylloc.first_line = yylineno; return TASK; }
-"ROTATE RIGHT"  { yylloc.last_line = yylloc.first_line = yylineno; return R_RIGHT; }
-"ROTATE LEFT"   { yylloc.last_line = yylloc.first_line = yylineno; return R_LEFT; }
+"PLEASE"            { yylloc.last_line = yylloc.first_line = yylineno; return PLEASE; }
+"THANKS"            { yylloc.last_line = yylloc.first_line = yylineno; return THANKS; }
+"VAR"               { yylloc.last_line = yylloc.first_line = yylineno; return VAR; }
+"LOGITIZE"          { yylloc.last_line = yylloc.first_line = yylineno; return LOGITIZE; }
+"DIGITIZE"          { yylloc.last_line = yylloc.first_line = yylineno; return DIGITIZE; }
+"SIZE"              { yylloc.last_line = yylloc.first_line = yylineno; return SIZE; }
+"REDUCE"            { yylloc.last_line = yylloc.first_line = yylineno; return REDUCE; } 
+"EXTENED"           { yylloc.last_line = yylloc.first_line = yylineno; return EXTENED; }
+"NOT"               { yylloc.last_line = yylloc.first_line = yylineno; return NOT; } 
+"AND"               { yylloc.last_line = yylloc.first_line = yylineno; return AND; }
+"MXTRUE"            { yylloc.last_line = yylloc.first_line = yylineno; return MXTRUE; }
+"MXFALSE"           { yylloc.last_line = yylloc.first_line = yylineno; return MXFALSE; }
+"FOR"               { yylloc.last_line = yylloc.first_line = yylineno; return FOR; }
+"BOUNDARY"          { yylloc.last_line = yylloc.first_line = yylineno; return BOUNDARY; }
+"STEP"              { yylloc.last_line = yylloc.first_line = yylineno; return STEP; }
+"SWITCH"            { yylloc.last_line = yylloc.first_line = yylineno; return SWITCH; }
+"DO"                { yylloc.last_line = yylloc.first_line = yylineno; return DO; }
+"GET"               { yylloc.last_line = yylloc.first_line = yylineno; return GET; }
+"TASK"              { yylloc.last_line = yylloc.first_line = yylineno; return TASK; }
+"ROTATE RIGHT"      { yylloc.last_line = yylloc.first_line = yylineno; return R_RIGHT; }
+"ROTATE LEFT"       { yylloc.last_line = yylloc.first_line = yylineno; return R_LEFT; }
 "GET ENVIRONMENT"   { yylloc.last_line = yylloc.first_line = yylineno; return GET_E; }
-"MOVE"          { yylloc.last_line = yylloc.first_line = yylineno; return MOVE; }
-"FINDEXIT"      return FINDEXIT;
-"RESULT"        { yylloc.last_line = yylloc.first_line = yylineno; return RESULT; }
-"PRINT"         { yylloc.last_line = yylloc.first_line = yylineno; return PRINT; }
-[\n]            return ENDLINE;
+"MOVE"              { yylloc.last_line = yylloc.first_line = yylineno; return MOVE; }
+"FINDEXIT"          return FINDEXIT;
+"RESULT"            { yylloc.last_line = yylloc.first_line = yylineno; return RESULT; }
+"PRINT"             { yylloc.last_line = yylloc.first_line = yylineno; return PRINT; }
+[\n]                return ENDLINE;
 
 
 "MXEQ"|"MXLT"|"MXGT"|"MXLTE"|"MXGTE"        return MXCOMP;

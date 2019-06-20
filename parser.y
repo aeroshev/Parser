@@ -1,6 +1,6 @@
 %{
     #define YYDEBUG 0
-    #define YYERROR_VERBOSE 1
+    #define YYERROR_VERBOSE 0
     #include "Prog.h"
 
     extern FILE * yyin;
@@ -92,20 +92,28 @@ statement_list:
         statement                               { $$ = $1; }
         | statement_list statement              { $$ = machine.create("ENDLINE", 2, $1, $2); }
         ;
-
+//
 function_definition:
         TASK VARIABLE VARIABLE ',' '[' declaration_list ']' ENDLINE statement_list RESULT VARIABLE           { $$ = nullptr; machine.putFunc($2, $3, $9, $11); delete $2; delete $3; delete $11; }
         | TASK VARIABLE VARIABLE ENDLINE statement_list RESULT VARIABLE                                      { $$ = nullptr; machine.putFunc($2, $3, $5, $7); delete $2; delete $3; delete $7; }
         | TASK FINDEXIT ENDLINE statement_list RESULT                                                        { $$ = $4; machine.putFunc($4); }
         | TASK VARIABLE VARIABLE error '[' declaration_list ']' ENDLINE statement_list RESULT VARIABLE       { $$ = ERROR("Missed ','", @4.first_line); yyerrok; }
         | TASK VARIABLE error                                                                                { $$ = ERROR("Missed variable", @2.first_line); yyerrok; }
-        | TASK error                                                                                         { $$ = ERROR("Missed name function", @2.first_line); yyerrok; }
+        | TASK error VARIABLE ',' '[' declaration_list ']' ENDLINE statement_list RESULT VARIABLE            { $$ = ERROR("Missed name function", @2.first_line); yyerrok ; delete $3; delete $11; }
+        | TASK error VARIABLE ENDLINE statement_list RESULT VARIABLE                                         { $$ = ERROR("Missed name function", @2.first_line); yyerrok ; delete $3; delete $7; }
+        | TASK VARIABLE VARIABLE ',' '[' declaration_list ']' ENDLINE statement_list error                   { $$ = ERROR("Function must end RESULT", @1.first_line); yyerrok; }
+        | TASK VARIABLE VARIABLE ENDLINE statement_list error                                                { $$ = ERROR("Function must end RESULT", @1.first_line); yyerrok; }
+        | TASK FINDEXIT ENDLINE statement_list                                                               { $$ = ERROR("Function must end RESULT", @1.first_line); yyerrok; }
+        | TASK error                                                                                         { $$ = ERROR("Somthening wrong in body function", @2.first_line); yyerrok; }
         ;
-
+//
 call_definition:
         DO VARIABLE VARIABLE ',' '[' declaration_list ']'               { $$ = machine.funcall("DO", $2, $3, machine.args); delete $2; delete $3; }
         | DO VARIABLE VARIABLE                                          { $$ = machine.funcall("DO", $2, $3); delete $2; delete $3; }
-        | DO error                                                      { $$ = ERROR("Missed name function", @2.first_line); yyerrok; }
+        | DO error VARIABLE                                             { $$ = ERROR("Missed name function", @2.first_line); yyerrok; delete $3; }
+        | DO error VARIABLE ',' '[' declaration_list ']'                { $$ = ERROR("Missed name function", @2.first_line); yyerrok; delete $3; }
+        | DO VARIABLE error                                             { $$ = ERROR("Missed argument function", @3.first_line); yyerrok; delete $2; }
+        | DO error                                                      { $$ = ERROR("Not atribute for call function", @1.first_line); yyerrok; }                     
         ;
 
 declaration_list:
@@ -126,8 +134,8 @@ expression:
     | robot_operation                           { $$ = $1; }
     | unary_operation                           { $$ = $1; }
     | VARIABLE '[' expression_list ']'          { $$ = machine.appeal("APPEAL", $1); delete $1; }
-    | VARIABLE '[' expression_list error        { $$ = ERROR("Missed ']'", @4.first_line); yyerrok; delete $1; } 
-    | VARIABLE '[' error                        { $$ = ERROR("Missed enumeration", @3.first_line); yyerrok; delete $1; }
+    | VARIABLE '[' error ']'                    { $$ = ERROR("Missed enumeration", @3.first_line); yyerrok; delete $1; }
+    | VARIABLE '[' expression_list              { $$ = ERROR("Missed ']'", @3.first_line); yyerrok; delete $1; }
     | '(' expression ')'                        { $$ = $2; }
     | '(' error ')'                             { $$ = ERROR("Error in ()", @1.first_line); yyerrok; }
     ;
@@ -155,6 +163,7 @@ unary_operation:
     | SIZE '(' VARIABLE ')'                 { $$ = machine.create("SIZE", 1, machine.id($3)); delete $3; }
     | SIZE '(' VARIABLE error               { $$ = ERROR("Missed ')'", @4.first_line);}
     | SIZE '('')'                           { $$ = ERROR("Missed name variable", @1.first_line); }
+    | SIZE '(' error ')'                    { $$ = ERROR("Wrong atribute", @3.first_line); yyerrok; }
     | SIZE error                            { $$ = ERROR("Missed '('", @2.first_line); yyerrok; }
     | GET VARIABLE                          { $$ = machine.create("GET", 1, machine.id_func($2)); delete $2; }
     ;
@@ -168,6 +177,7 @@ compare_operation:
 
 statement:
     statement_s ENDLINE                     { $$ = $1; }
+    | error ENDLINE                         { $$ = nullptr; }
     | PLEASE statement_s ENDLINE            { $$ = machine.courtesy(1, $2); }
     | PLEASE statement_s THANKS ENDLINE     { $$ = machine.courtesy(2, $2); }
     | statement_s THANKS ENDLINE            { $$ = machine.courtesy(1, $1); }
@@ -191,24 +201,31 @@ statement_s:
     | appeal_state error expression     { $$ = ERROR("Missed '='", @2.first_line); }
     ;
 
-
+//
 switch_state:
     SWITCH expression BOOL statement_list '[' BOOL statement_list ']'           { $$ = machine.create("SWITCH", 5, $2, machine.constant($3, "BOOL"), $4, machine.constant($6, "BOOL"), $7);} 
     | SWITCH expression BOOL statement_list '[' BOOL statement_list error       { $$ = ERROR("Missed ']'", @8.first_line); yyerrok; }
     | SWITCH expression BOOL statement_list '[' error                           { $$ = ERROR("Missed second flag", @6.first_line); yyerrok; }
     | SWITCH expression BOOL statement_list error BOOL                          { $$ = ERROR("Missed '['", @5.first_line); yyerrok; }
     | SWITCH expression error                                                   { $$ = ERROR("Missed first flag", @3.first_line); yyerrok; }
+    | SWITCH error                                                              { $$ = ERROR("Invalid define SWITCH", @2.first_line); yyerrok; }
     ;
 
 appeal_state:
     VARIABLE '[' expression_list ']'                { $$ = machine.appeal("APPEAL_A", $1); delete $1; }
-    | VARIABLE '[' expression_list error            { $$ = ERROR("Missed ']'", @4.first_line); yyerrok; delete $1; } 
-    | VARIABLE '[' error                            { $$ = ERROR("Missed enumeration",@3.first_line); yyerrok;  delete $1; }
+    | VARIABLE '[' error ']'                        { $$ = ERROR("Invalid enumeration",@3.first_line); yyerrok;  delete $1; }
+    | VARIABLE '[' ']'                              { $$ = ERROR("Missed enumeration",@3.first_line); yyerrok;  delete $1; }   
+    | VARIABLE '[' expression_list error            { $$ = ERROR("Missed '['", @4.first_line); yyerrok; delete $1; }    
     | VARIABLE error                                { $$ = ERROR("Missed '['", @2.first_line); yyerrok; delete $1; }
     ;
 
 for_loop:
     FOR VARIABLE BOUNDARY VARIABLE STEP VARIABLE ENDLINE '(' statement_list ')'                 { $$ = machine.create("FOR", 4, machine.id($2), machine.id($4), machine.id($6), $9); delete $2; delete $4; delete $6; }
+    | FOR error                                                                                 { $$ = ERROR("Invalid define loop", @2.first_line); yyerrok; }
+    | FOR BOUNDARY VARIABLE STEP VARIABLE ENDLINE '(' statement_list ')'                        { $$ = ERROR("Missed counter", @1.first_line); yyerrok; delete $3; delete $5; }
+    | FOR VARIABLE BOUNDARY STEP VARIABLE ENDLINE '(' statement_list ')'                        { $$ = ERROR("Missed edge", @3.first_line); yyerrok; delete $2; delete $5; }
+    | FOR VARIABLE BOUNDARY VARIABLE STEP ENDLINE '(' statement_list ')'                        { $$ = ERROR("Missed step", @5.first_line); yyerrok; delete $2; delete $4; }
+    | FOR VARIABLE BOUNDARY VARIABLE STEP VARIABLE error                                        { $$ = ERROR("Invalid body", @7.first_line); yyerrok; delete $2; delete $4; delete $6; }
     | FOR VARIABLE BOUNDARY VARIABLE STEP VARIABLE ENDLINE '(' statement_list error             { $$ = ERROR("Missed ')' for loop block", @10.first_line); yyerrok; }
     ;
 
@@ -228,12 +245,16 @@ definition:
     | VAR VARIABLE '=' INTEGER                                  { $$ = machine.putId($2, $4, "INT"); delete $2; }
     | VAR VARIABLE '=' BOOL                                     { $$ = machine.putId($2, $4, "BOOL"); delete $2; }
     | VAR VARIABLE '[' expression_list ']' '=' error            { $$ = ERROR("Missed literal", @7.first_line); yyerrok; delete $2; }
-    | VAR VARIABLE '[' expression_list ']' error                { $$ = ERROR("Missed '='", @6.first_line); yyerrok; delete $2; }
-    | VAR VARIABLE '[' expression_list error                    { $$ = ERROR("Missed ']'", @5.first_line); yyerrok; delete $2; }
-    | VAR VARIABLE '[' error                                    { $$ = ERROR("Missed enumeration size", @4.first_line); yyerrok; delete $2; }
-    | VAR VARIABLE error                                        { $$ = ERROR("Missed '[' or '='", @3.first_line); yyerrok; delete $2; }
     | VAR VARIABLE '=' error                                    { $$ = ERROR("Missed literal", @4.first_line); yyerrok; delete $2; }
-    | VAR error                                                 { $$ = ERROR("Missed name", @2.first_line); yyerrok;}
+    | VAR VARIABLE '[' expression_list ']' error                { $$ = ERROR("Missed '='", @6.first_line); yyerrok; delete $2; }
+    | VAR VARIABLE '[' expression_list error '=' INTEGER        { $$ = ERROR("Missed ']' or ','", @5.first_line); yyerrok; delete $2; }
+    | VAR VARIABLE '[' expression_list error '=' BOOL           { $$ = ERROR("Missed ']' or ','", @5.first_line); yyerrok; delete $2; }
+    | VAR VARIABLE '[' error ']' '=' INTEGER                    { $$ = ERROR("Wrong enumeration size", @4.first_line); yyerrok; delete $2; }
+    | VAR VARIABLE '[' error ']' '=' BOOL                       { $$ = ERROR("Wrong enumeration size", @4.first_line); yyerrok; delete $2; }
+    | VAR VARIABLE error                                        { $$ = ERROR("Missed '[' or '='", @3.first_line); yyerrok; delete $2; } 
+    | VAR error '[' expression_list ']' '=' INTEGER             { $$ = ERROR("Missed name", @2.first_line); yyerrok;}
+    | VAR error '[' expression_list ']' '=' BOOL                { $$ = ERROR("Missed name", @2.first_line); yyerrok;}
+    | VAR error                                                 { $$ = ERROR("Undefine variable", @2.first_line); yyerrok; }
     ;
 
 unary_statement:
@@ -242,11 +263,13 @@ unary_statement:
     | REDUCE VARIABLE '[' INTEGER ']'           { $$ = machine.create("REDUCE", 2, machine.id($2), machine.constant($4, "INT")); delete $2; }
     | EXTENED VARIABLE '[' INTEGER ']'          { $$ = machine.create("EXTENED", 2 , machine.id($2), machine.constant($4, "INT")); delete $2; }
     | REDUCE VARIABLE '[' INTEGER error         { $$ = ERROR("Missed ']'", @5.first_line); yyerrok;  delete $2;}
-    | REDUCE VARIABLE '[' error                 { $$ = ERROR("Missed number", @4.first_line); yyerrok; delete $2; }
+    | REDUCE VARIABLE '[' error ']'             { $$ = ERROR("Missed number", @4.first_line); yyerrok; delete $2; }
+    | REDUCE VARIABLE '[' error                 { $$ = ERROR("Invalid argunemt", @4.first_line); yyerrok; delete $2; }
     | REDUCE VARIABLE error                     { $$ = ERROR("Missed '['", @3.first_line); yyerrok; delete $2; }
     | REDUCE error                              { $$ = ERROR("Missed variable", @2.first_line); yyerrok;}
     | EXTENED VARIABLE '[' INTEGER error        { $$ = ERROR("Missed ']'", @5.first_line); yyerrok; delete $2; }
-    | EXTENED VARIABLE '[' error                { $$ = ERROR("Missed number", @4.first_line); yyerrok; delete $2; }
+    | EXTENED VARIABLE '[' error ']'            { $$ = ERROR("Missed number", @4.first_line); yyerrok; delete $2; }
+    | EXTENED VARIABLE '[' error                { $$ = ERROR("Invalid argunemt", @4.first_line); yyerrok; delete $2; }
     | EXTENED VARIABLE error                    { $$ = ERROR("Missed '['", @3.first_line); yyerrok; delete $2; }
     | EXTENED error                             { $$ = ERROR("Missed variable", @2.first_line); yyerrok;}
     ;
