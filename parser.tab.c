@@ -170,8 +170,6 @@
     std::pair<uint64_t, uint64_t> start = std::make_pair(1, 1);
     std::pair<uint64_t, uint64_t> vision = std::make_pair(1, 0);
 
-    constexpr char* fileName = "map.txt";
-
     MAIN_CLASS machine(start, vision, map);
 
     void freeNode(Vertex *);
@@ -198,7 +196,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 39 "parser.y"
+#line 37 "parser.y"
 {
     Vertex *nPtr;
     int iValue;
@@ -206,7 +204,7 @@ typedef union YYSTYPE
     char* iName;  
 }
 /* Line 193 of yacc.c.  */
-#line 210 "parser.tab.c"
+#line 208 "parser.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -231,7 +229,7 @@ typedef struct YYLTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 235 "parser.tab.c"
+#line 233 "parser.tab.c"
 
 #ifdef short
 # undef short
@@ -595,20 +593,20 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    74,    74,    85,    86,    90,    91,    95,    96,   100,
-     101,   102,   103,   104,   105,   106,   107,   108,   109,   110,
-     111,   112,   116,   117,   118,   119,   120,   121,   122,   126,
-     127,   131,   132,   136,   137,   138,   139,   140,   141,   142,
-     143,   144,   145,   146,   150,   151,   152,   153,   154,   158,
-     159,   160,   161,   165,   166,   167,   168,   169,   170,   171,
-     172,   173,   174,   178,   179,   180,   181,   185,   186,   187,
-     188,   189,   190,   194,   195,   196,   197,   198,   199,   200,
-     201,   202,   203,   204,   205,   206,   207,   212,   213,   214,
-     215,   216,   217,   221,   222,   223,   224,   225,   229,   230,
-     231,   232,   233,   234,   235,   239,   240,   244,   245,   249,
-     250,   251,   252,   253,   254,   255,   256,   257,   258,   259,
-     260,   261,   262,   263,   267,   268,   269,   270,   271,   272,
-     273,   274,   275,   276,   277,   278,   279,   280
+       0,    72,    72,    83,    84,    88,    89,    93,    94,    98,
+      99,   100,   101,   102,   103,   104,   105,   106,   107,   108,
+     109,   110,   114,   115,   116,   117,   118,   119,   120,   124,
+     125,   129,   130,   134,   135,   136,   137,   138,   139,   140,
+     141,   142,   143,   144,   148,   149,   150,   151,   152,   156,
+     157,   158,   159,   163,   164,   165,   166,   167,   168,   169,
+     170,   171,   172,   176,   177,   178,   179,   183,   184,   185,
+     186,   187,   188,   192,   193,   194,   195,   196,   197,   198,
+     199,   200,   201,   202,   203,   204,   205,   210,   211,   212,
+     213,   214,   215,   219,   220,   221,   222,   223,   227,   228,
+     229,   230,   231,   232,   233,   237,   238,   242,   243,   247,
+     248,   249,   250,   251,   252,   253,   254,   255,   256,   257,
+     258,   259,   260,   261,   265,   266,   267,   268,   269,   270,
+     271,   272,   273,   274,   275,   276,   277,   278
 };
 #endif
 
@@ -1839,7 +1837,7 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 74 "parser.y"
+#line 72 "parser.y"
     { 
                                                     if (!errorFlag)
                                                     {
@@ -1851,683 +1849,683 @@ yyreduce:
     break;
 
   case 3:
-#line 85 "parser.y"
+#line 83 "parser.y"
     { (yyval.nPtr) = (yyvsp[(1) - (1)].nPtr); ;}
     break;
 
   case 4:
-#line 86 "parser.y"
+#line 84 "parser.y"
     { (yyval.nPtr) = machine.create("ENDLINE", 2, (yyvsp[(1) - (2)].nPtr), (yyvsp[(2) - (2)].nPtr)); ;}
     break;
 
   case 5:
-#line 90 "parser.y"
+#line 88 "parser.y"
     { (yyval.nPtr) = (yyvsp[(1) - (1)].nPtr); ;}
     break;
 
   case 6:
-#line 91 "parser.y"
+#line 89 "parser.y"
     { (yyval.nPtr) = nullptr; ;}
     break;
 
   case 7:
-#line 95 "parser.y"
+#line 93 "parser.y"
     { (yyval.nPtr) = (yyvsp[(1) - (1)].nPtr); ;}
     break;
 
   case 8:
-#line 96 "parser.y"
+#line 94 "parser.y"
     { (yyval.nPtr) = machine.create("ENDLINE", 2, (yyvsp[(1) - (2)].nPtr), (yyvsp[(2) - (2)].nPtr)); ;}
     break;
 
   case 9:
-#line 100 "parser.y"
+#line 98 "parser.y"
     { (yyval.nPtr) = nullptr; machine.putFunc((yyvsp[(2) - (11)].iName), (yyvsp[(3) - (11)].iName), (yyvsp[(9) - (11)].nPtr), (yyvsp[(11) - (11)].iName)); delete (yyvsp[(2) - (11)].iName); delete (yyvsp[(3) - (11)].iName); delete (yyvsp[(11) - (11)].iName); ;}
     break;
 
   case 10:
-#line 101 "parser.y"
+#line 99 "parser.y"
     { (yyval.nPtr) = nullptr; machine.putFunc((yyvsp[(2) - (7)].iName), (yyvsp[(3) - (7)].iName), (yyvsp[(5) - (7)].nPtr), (yyvsp[(7) - (7)].iName)); delete (yyvsp[(2) - (7)].iName); delete (yyvsp[(3) - (7)].iName); delete (yyvsp[(7) - (7)].iName); ;}
     break;
 
   case 11:
-#line 102 "parser.y"
+#line 100 "parser.y"
     { (yyval.nPtr) = (yyvsp[(4) - (5)].nPtr); machine.putFunc((yyvsp[(4) - (5)].nPtr)); ;}
     break;
 
   case 12:
-#line 103 "parser.y"
+#line 101 "parser.y"
     { (yyval.nPtr) = ERROR("Missed ','", (yylsp[(4) - (11)]).first_line); yyerrok; ;}
     break;
 
   case 13:
-#line 104 "parser.y"
+#line 102 "parser.y"
     { (yyval.nPtr) = ERROR("Missed variable", (yylsp[(2) - (3)]).first_line); yyerrok; ;}
     break;
 
   case 14:
-#line 105 "parser.y"
+#line 103 "parser.y"
     { (yyval.nPtr) = ERROR("Missed name function", (yylsp[(2) - (11)]).first_line); yyerrok ; delete (yyvsp[(3) - (11)].iName); delete (yyvsp[(11) - (11)].iName); ;}
     break;
 
   case 15:
-#line 106 "parser.y"
+#line 104 "parser.y"
     { (yyval.nPtr) = ERROR("Missed name function", (yylsp[(2) - (7)]).first_line); yyerrok ; delete (yyvsp[(3) - (7)].iName); delete (yyvsp[(7) - (7)].iName); ;}
     break;
 
   case 16:
-#line 107 "parser.y"
+#line 105 "parser.y"
     { (yyval.nPtr) = ERROR("Function must end RESULT", (yylsp[(1) - (10)]).first_line); yyerrok; ;}
     break;
 
   case 17:
-#line 108 "parser.y"
+#line 106 "parser.y"
     { (yyval.nPtr) = ERROR("Function must end RESULT", (yylsp[(1) - (6)]).first_line); yyerrok; ;}
     break;
 
   case 18:
-#line 109 "parser.y"
+#line 107 "parser.y"
     { (yyval.nPtr) = ERROR("Function must end RESULT", (yylsp[(1) - (5)]).first_line); yyerrok; ;}
     break;
 
   case 19:
-#line 110 "parser.y"
+#line 108 "parser.y"
     { (yyval.nPtr) = ERROR("Not provided variable for RESULT", (yylsp[(10) - (11)]).first_line); yyerrok; delete (yyvsp[(2) - (11)].iName); delete (yyvsp[(3) - (11)].iName); ;}
     break;
 
   case 20:
-#line 111 "parser.y"
+#line 109 "parser.y"
     { (yyval.nPtr) = ERROR("Not provided variable for RESULT", (yylsp[(6) - (7)]).first_line); yyerrok; delete (yyvsp[(2) - (7)].iName); delete (yyvsp[(3) - (7)].iName); ;}
     break;
 
   case 21:
-#line 112 "parser.y"
+#line 110 "parser.y"
     { (yyval.nPtr) = ERROR("Somthening wrong in body function", (yylsp[(2) - (2)]).first_line); yyerrok; ;}
     break;
 
   case 22:
-#line 116 "parser.y"
+#line 114 "parser.y"
     { (yyval.nPtr) = machine.funcall("DO", (yyvsp[(2) - (7)].iName), (yyvsp[(3) - (7)].iName), machine.args); delete (yyvsp[(2) - (7)].iName); delete (yyvsp[(3) - (7)].iName); ;}
     break;
 
   case 23:
-#line 117 "parser.y"
+#line 115 "parser.y"
     { (yyval.nPtr) = machine.funcall("DO", (yyvsp[(2) - (3)].iName), (yyvsp[(3) - (3)].iName)); delete (yyvsp[(2) - (3)].iName); delete (yyvsp[(3) - (3)].iName); ;}
     break;
 
   case 24:
-#line 118 "parser.y"
+#line 116 "parser.y"
     { (yyval.nPtr) = ERROR("Missed name function", (yylsp[(2) - (3)]).first_line); yyerrok; delete (yyvsp[(3) - (3)].iName); ;}
     break;
 
   case 25:
-#line 119 "parser.y"
+#line 117 "parser.y"
     { (yyval.nPtr) = ERROR("Missed name function", (yylsp[(2) - (7)]).first_line); yyerrok; delete (yyvsp[(3) - (7)].iName); ;}
     break;
 
   case 26:
-#line 120 "parser.y"
+#line 118 "parser.y"
     { (yyval.nPtr) = ERROR("Missed argument function", (yylsp[(3) - (3)]).first_line); yyerrok; delete (yyvsp[(2) - (3)].iName); ;}
     break;
 
   case 27:
-#line 121 "parser.y"
+#line 119 "parser.y"
     { (yyval.nPtr) = ERROR("Missed ','", (yylsp[(3) - (6)]).first_line); yyerrok; delete (yyvsp[(2) - (6)].iName); delete (yyvsp[(3) - (6)].iName); ;}
     break;
 
   case 28:
-#line 122 "parser.y"
+#line 120 "parser.y"
     { (yyval.nPtr) = ERROR("Not atribute for call function", (yylsp[(1) - (2)]).first_line); yyerrok; ;}
     break;
 
   case 29:
-#line 126 "parser.y"
+#line 124 "parser.y"
     { (yyval.nPtr) = nullptr; machine.args.push_back((yyvsp[(1) - (1)].iName)); delete (yyvsp[(1) - (1)].iName); ;}
     break;
 
   case 30:
-#line 127 "parser.y"
+#line 125 "parser.y"
     { (yyval.nPtr) = nullptr; machine.args.push_back((yyvsp[(3) - (3)].iName)); delete (yyvsp[(3) - (3)].iName); ;}
     break;
 
   case 31:
-#line 131 "parser.y"
+#line 129 "parser.y"
     { (yyval.nPtr) = nullptr; machine.exprl.push_back((yyvsp[(1) - (1)].nPtr)); ;}
     break;
 
   case 32:
-#line 132 "parser.y"
+#line 130 "parser.y"
     { (yyval.nPtr) = nullptr; machine.exprl.push_back((yyvsp[(3) - (3)].nPtr)); ;}
     break;
 
   case 33:
-#line 136 "parser.y"
+#line 134 "parser.y"
     { (yyval.nPtr) = machine.constant((yyvsp[(1) - (1)].iBool), "BOOL"); ;}
     break;
 
   case 34:
-#line 137 "parser.y"
+#line 135 "parser.y"
     { (yyval.nPtr) = machine.constant((yyvsp[(1) - (1)].iValue), "INT"); ;}
     break;
 
   case 35:
-#line 138 "parser.y"
+#line 136 "parser.y"
     { (yyval.nPtr) = machine.id((yyvsp[(1) - (1)].iName)); delete (yyvsp[(1) - (1)].iName); ;}
     break;
 
   case 36:
-#line 139 "parser.y"
+#line 137 "parser.y"
     { (yyval.nPtr) = (yyvsp[(1) - (1)].nPtr); ;}
     break;
 
   case 37:
-#line 140 "parser.y"
+#line 138 "parser.y"
     { (yyval.nPtr) = (yyvsp[(1) - (1)].nPtr); ;}
     break;
 
   case 38:
-#line 141 "parser.y"
+#line 139 "parser.y"
     { (yyval.nPtr) = (yyvsp[(1) - (1)].nPtr); ;}
     break;
 
   case 39:
-#line 142 "parser.y"
+#line 140 "parser.y"
     { (yyval.nPtr) = machine.appeal("APPEAL", (yyvsp[(1) - (4)].iName)); delete (yyvsp[(1) - (4)].iName); ;}
     break;
 
   case 40:
-#line 143 "parser.y"
+#line 141 "parser.y"
     { (yyval.nPtr) = ERROR("Missed enumeration", (yylsp[(3) - (4)]).first_line); yyerrok; delete (yyvsp[(1) - (4)].iName); ;}
     break;
 
   case 41:
-#line 144 "parser.y"
+#line 142 "parser.y"
     { (yyval.nPtr) = ERROR("Missed ']'", (yylsp[(3) - (3)]).first_line); yyerrok; delete (yyvsp[(1) - (3)].iName); ;}
     break;
 
   case 42:
-#line 145 "parser.y"
+#line 143 "parser.y"
     { (yyval.nPtr) = (yyvsp[(2) - (3)].nPtr); ;}
     break;
 
   case 43:
-#line 146 "parser.y"
+#line 144 "parser.y"
     { (yyval.nPtr) = ERROR("Error in ()", (yylsp[(1) - (3)]).first_line); yyerrok; ;}
     break;
 
   case 44:
-#line 150 "parser.y"
+#line 148 "parser.y"
     { (yyval.nPtr) = machine.create("+", 2, (yyvsp[(1) - (3)].nPtr), (yyvsp[(3) - (3)].nPtr)); ;}
     break;
 
   case 45:
-#line 151 "parser.y"
+#line 149 "parser.y"
     { (yyval.nPtr) = machine.create("*", 2, (yyvsp[(1) - (3)].nPtr), (yyvsp[(3) - (3)].nPtr)); ;}
     break;
 
   case 46:
-#line 152 "parser.y"
+#line 150 "parser.y"
     { (yyval.nPtr) = machine.create("-", 2, (yyvsp[(1) - (3)].nPtr), (yyvsp[(3) - (3)].nPtr)); ;}
     break;
 
   case 47:
-#line 153 "parser.y"
+#line 151 "parser.y"
     { (yyval.nPtr) = machine.create("/", 2, (yyvsp[(1) - (3)].nPtr), (yyvsp[(3) - (3)].nPtr)); ;}
     break;
 
   case 48:
-#line 154 "parser.y"
+#line 152 "parser.y"
     { (yyval.nPtr) = machine.create("AND", 2, (yyvsp[(1) - (3)].nPtr), (yyvsp[(3) - (3)].nPtr)); ;}
     break;
 
   case 49:
-#line 158 "parser.y"
+#line 156 "parser.y"
     { (yyval.nPtr) = machine.robot("MOVE"); ;}
     break;
 
   case 50:
-#line 159 "parser.y"
+#line 157 "parser.y"
     { (yyval.nPtr) = machine.robot("ROTATE_LEFT"); ;}
     break;
 
   case 51:
-#line 160 "parser.y"
+#line 158 "parser.y"
     { (yyval.nPtr) = machine.robot("ROTATE_RIGHT"); ;}
     break;
 
   case 52:
-#line 161 "parser.y"
+#line 159 "parser.y"
     { (yyval.nPtr) = machine.robot("GET_E"); ;}
     break;
 
   case 53:
-#line 165 "parser.y"
+#line 163 "parser.y"
     { (yyval.nPtr) = (yyvsp[(1) - (1)].nPtr); ;}
     break;
 
   case 54:
-#line 166 "parser.y"
+#line 164 "parser.y"
     { (yyval.nPtr) = machine.create("UMINUS",1, (yyvsp[(2) - (2)].nPtr)); ;}
     break;
 
   case 55:
-#line 167 "parser.y"
+#line 165 "parser.y"
     { (yyval.nPtr) = machine.create("NOT", 1, (yyvsp[(2) - (2)].nPtr)); ;}
     break;
 
   case 56:
-#line 168 "parser.y"
+#line 166 "parser.y"
     { (yyval.nPtr) = ERROR("It's not a expression", (yylsp[(1) - (2)]).first_line); yyerrok; ;}
     break;
 
   case 57:
-#line 169 "parser.y"
+#line 167 "parser.y"
     { (yyval.nPtr) = machine.create("SIZE", 1, machine.id((yyvsp[(3) - (4)].iName))); delete (yyvsp[(3) - (4)].iName); ;}
     break;
 
   case 58:
-#line 170 "parser.y"
+#line 168 "parser.y"
     { (yyval.nPtr) = ERROR("Missed ')'", (yylsp[(4) - (4)]).first_line);;}
     break;
 
   case 59:
-#line 171 "parser.y"
+#line 169 "parser.y"
     { (yyval.nPtr) = ERROR("Missed name variable", (yylsp[(1) - (3)]).first_line); ;}
     break;
 
   case 60:
-#line 172 "parser.y"
+#line 170 "parser.y"
     { (yyval.nPtr) = ERROR("Wrong atribute", (yylsp[(3) - (4)]).first_line); yyerrok; ;}
     break;
 
   case 61:
-#line 173 "parser.y"
+#line 171 "parser.y"
     { (yyval.nPtr) = ERROR("Missed '('", (yylsp[(2) - (2)]).first_line); yyerrok; ;}
     break;
 
   case 62:
-#line 174 "parser.y"
+#line 172 "parser.y"
     { (yyval.nPtr) = machine.create("GET", 1, machine.id_func((yyvsp[(2) - (2)].iName))); delete (yyvsp[(2) - (2)].iName); ;}
     break;
 
   case 63:
-#line 178 "parser.y"
+#line 176 "parser.y"
     { (yyval.nPtr) = machine.create("MXCOMP", 1, (yyvsp[(2) - (2)].nPtr)); ;}
     break;
 
   case 64:
-#line 179 "parser.y"
+#line 177 "parser.y"
     { (yyval.nPtr) = machine.create("ELCOMP", 1, (yyvsp[(2) - (2)].nPtr)); ;}
     break;
 
   case 65:
-#line 180 "parser.y"
+#line 178 "parser.y"
     { (yyval.nPtr) = machine.create("MXTRUE", 1, (yyvsp[(2) - (2)].nPtr)); ;}
     break;
 
   case 66:
-#line 181 "parser.y"
+#line 179 "parser.y"
     { (yyval.nPtr) = machine.create("MXFALSE", 1, (yyvsp[(2) - (2)].nPtr)); ;}
     break;
 
   case 67:
-#line 185 "parser.y"
+#line 183 "parser.y"
     { (yyval.nPtr) = (yyvsp[(1) - (2)].nPtr); ;}
     break;
 
   case 68:
-#line 186 "parser.y"
+#line 184 "parser.y"
     { (yyval.nPtr) = nullptr; ;}
     break;
 
   case 69:
-#line 187 "parser.y"
+#line 185 "parser.y"
     { (yyval.nPtr) = machine.courtesy(1, (yyvsp[(2) - (3)].nPtr)); ;}
     break;
 
   case 70:
-#line 188 "parser.y"
+#line 186 "parser.y"
     { (yyval.nPtr) = machine.courtesy(2, (yyvsp[(2) - (4)].nPtr)); ;}
     break;
 
   case 71:
-#line 189 "parser.y"
+#line 187 "parser.y"
     { (yyval.nPtr) = machine.courtesy(1, (yyvsp[(1) - (3)].nPtr)); ;}
     break;
 
   case 72:
-#line 190 "parser.y"
+#line 188 "parser.y"
     { (yyval.nPtr) = nullptr; ;}
     break;
 
   case 73:
-#line 194 "parser.y"
+#line 192 "parser.y"
     { (yyval.nPtr) = (yyvsp[(1) - (1)].nPtr); ;}
     break;
 
   case 74:
-#line 195 "parser.y"
+#line 193 "parser.y"
     { (yyval.nPtr) = (yyvsp[(1) - (1)].nPtr); ;}
     break;
 
   case 75:
-#line 196 "parser.y"
+#line 194 "parser.y"
     { (yyval.nPtr) = (yyvsp[(1) - (1)].nPtr); ;}
     break;
 
   case 76:
-#line 197 "parser.y"
+#line 195 "parser.y"
     { (yyval.nPtr) = (yyvsp[(1) - (1)].nPtr); ;}
     break;
 
   case 77:
-#line 198 "parser.y"
+#line 196 "parser.y"
     { (yyval.nPtr) = (yyvsp[(1) - (1)].nPtr); ;}
     break;
 
   case 78:
-#line 199 "parser.y"
+#line 197 "parser.y"
     { (yyval.nPtr) = (yyvsp[(1) - (1)].nPtr); ;}
     break;
 
   case 79:
-#line 200 "parser.y"
+#line 198 "parser.y"
     { (yyval.nPtr) = (yyvsp[(1) - (1)].nPtr); ;}
     break;
 
   case 80:
-#line 201 "parser.y"
+#line 199 "parser.y"
     { (yyval.nPtr) = (yyvsp[(1) - (1)].nPtr); ;}
     break;
 
   case 81:
-#line 202 "parser.y"
+#line 200 "parser.y"
     { (yyval.nPtr) = machine.create("PRINT", 1, machine.id((yyvsp[(2) - (2)].iName))); delete (yyvsp[(2) - (2)].iName); ;}
     break;
 
   case 82:
-#line 203 "parser.y"
+#line 201 "parser.y"
     { (yyval.nPtr) = ERROR("Missed variable", (yylsp[(1) - (2)]).first_line); yyerrok; ;}
     break;
 
   case 83:
-#line 204 "parser.y"
+#line 202 "parser.y"
     { (yyval.nPtr) = machine.create("ASSIGN", 2, machine.id((yyvsp[(1) - (3)].iName)), (yyvsp[(3) - (3)].nPtr)); delete (yyvsp[(1) - (3)].iName); ;}
     break;
 
   case 84:
-#line 205 "parser.y"
+#line 203 "parser.y"
     { (yyval.nPtr) = ERROR("Missed '='", (yylsp[(1) - (3)]).first_line); yyerrok; delete (yyvsp[(1) - (3)].iName); ;}
     break;
 
   case 85:
-#line 206 "parser.y"
+#line 204 "parser.y"
     { (yyval.nPtr) = machine.create("ASSIGN_A", 2, (yyvsp[(1) - (3)].nPtr), (yyvsp[(3) - (3)].nPtr)); ;}
     break;
 
   case 86:
-#line 207 "parser.y"
+#line 205 "parser.y"
     { (yyval.nPtr) = ERROR("Missed '='", (yylsp[(2) - (3)]).first_line); ;}
     break;
 
   case 87:
-#line 212 "parser.y"
+#line 210 "parser.y"
     { (yyval.nPtr) = machine.create("SWITCH", 5, (yyvsp[(2) - (8)].nPtr), machine.constant((yyvsp[(3) - (8)].iBool), "BOOL"), (yyvsp[(4) - (8)].nPtr), machine.constant((yyvsp[(6) - (8)].iBool), "BOOL"), (yyvsp[(7) - (8)].nPtr));;}
     break;
 
   case 88:
-#line 213 "parser.y"
+#line 211 "parser.y"
     { (yyval.nPtr) = ERROR("Missed ']'", (yylsp[(8) - (8)]).first_line); yyerrok; ;}
     break;
 
   case 89:
-#line 214 "parser.y"
+#line 212 "parser.y"
     { (yyval.nPtr) = ERROR("Missed second flag", (yylsp[(6) - (6)]).first_line); yyerrok; ;}
     break;
 
   case 90:
-#line 215 "parser.y"
+#line 213 "parser.y"
     { (yyval.nPtr) = ERROR("Missed '['", (yylsp[(5) - (6)]).first_line); yyerrok; ;}
     break;
 
   case 91:
-#line 216 "parser.y"
+#line 214 "parser.y"
     { (yyval.nPtr) = ERROR("Missed first flag", (yylsp[(3) - (3)]).first_line); yyerrok; ;}
     break;
 
   case 92:
-#line 217 "parser.y"
+#line 215 "parser.y"
     { (yyval.nPtr) = ERROR("Invalid define SWITCH", (yylsp[(2) - (2)]).first_line); yyerrok; ;}
     break;
 
   case 93:
-#line 221 "parser.y"
+#line 219 "parser.y"
     { (yyval.nPtr) = machine.appeal("APPEAL_A", (yyvsp[(1) - (4)].iName)); delete (yyvsp[(1) - (4)].iName); ;}
     break;
 
   case 94:
-#line 222 "parser.y"
+#line 220 "parser.y"
     { (yyval.nPtr) = ERROR("Invalid enumeration",(yylsp[(3) - (4)]).first_line); yyerrok;  delete (yyvsp[(1) - (4)].iName); ;}
     break;
 
   case 95:
-#line 223 "parser.y"
+#line 221 "parser.y"
     { (yyval.nPtr) = ERROR("Missed enumeration",(yylsp[(3) - (3)]).first_line); yyerrok;  delete (yyvsp[(1) - (3)].iName); ;}
     break;
 
   case 96:
-#line 224 "parser.y"
+#line 222 "parser.y"
     { (yyval.nPtr) = ERROR("Missed '['", (yylsp[(4) - (4)]).first_line); yyerrok; delete (yyvsp[(1) - (4)].iName); ;}
     break;
 
   case 97:
-#line 225 "parser.y"
+#line 223 "parser.y"
     { (yyval.nPtr) = ERROR("Missed '['", (yylsp[(2) - (2)]).first_line); yyerrok; delete (yyvsp[(1) - (2)].iName); ;}
     break;
 
   case 98:
-#line 229 "parser.y"
+#line 227 "parser.y"
     { (yyval.nPtr) = machine.create("FOR", 4, machine.id((yyvsp[(2) - (10)].iName)), machine.id((yyvsp[(4) - (10)].iName)), machine.id((yyvsp[(6) - (10)].iName)), (yyvsp[(9) - (10)].nPtr)); delete (yyvsp[(2) - (10)].iName); delete (yyvsp[(4) - (10)].iName); delete (yyvsp[(6) - (10)].iName); ;}
     break;
 
   case 99:
-#line 230 "parser.y"
+#line 228 "parser.y"
     { (yyval.nPtr) = ERROR("Invalid define loop", (yylsp[(2) - (2)]).first_line); yyerrok; ;}
     break;
 
   case 100:
-#line 231 "parser.y"
+#line 229 "parser.y"
     { (yyval.nPtr) = ERROR("Missed counter", (yylsp[(1) - (9)]).first_line); yyerrok; delete (yyvsp[(3) - (9)].iName); delete (yyvsp[(5) - (9)].iName); ;}
     break;
 
   case 101:
-#line 232 "parser.y"
+#line 230 "parser.y"
     { (yyval.nPtr) = ERROR("Missed edge", (yylsp[(3) - (9)]).first_line); yyerrok; delete (yyvsp[(2) - (9)].iName); delete (yyvsp[(5) - (9)].iName); ;}
     break;
 
   case 102:
-#line 233 "parser.y"
+#line 231 "parser.y"
     { (yyval.nPtr) = ERROR("Missed step", (yylsp[(5) - (9)]).first_line); yyerrok; delete (yyvsp[(2) - (9)].iName); delete (yyvsp[(4) - (9)].iName); ;}
     break;
 
   case 103:
-#line 234 "parser.y"
+#line 232 "parser.y"
     { (yyval.nPtr) = ERROR("Invalid body", (yylsp[(7) - (7)]).first_line); yyerrok; delete (yyvsp[(2) - (7)].iName); delete (yyvsp[(4) - (7)].iName); delete (yyvsp[(6) - (7)].iName); ;}
     break;
 
   case 104:
-#line 235 "parser.y"
+#line 233 "parser.y"
     { (yyval.nPtr) = ERROR("Missed ')' for loop block", (yylsp[(10) - (10)]).first_line); yyerrok; ;}
     break;
 
   case 105:
-#line 239 "parser.y"
+#line 237 "parser.y"
     { (yyval.nPtr) = nullptr; ;}
     break;
 
   case 106:
-#line 240 "parser.y"
+#line 238 "parser.y"
     { (yyval.nPtr) = (yyvsp[(2) - (3)].nPtr); ;}
     break;
 
   case 107:
-#line 244 "parser.y"
+#line 242 "parser.y"
     { (yyval.nPtr) = (yyvsp[(1) - (1)].nPtr); ;}
     break;
 
   case 108:
-#line 245 "parser.y"
+#line 243 "parser.y"
     { (yyval.nPtr) = machine.create("ENDLINE", 2, (yyvsp[(1) - (2)].nPtr), (yyvsp[(2) - (2)].nPtr)); ;}
     break;
 
   case 109:
-#line 249 "parser.y"
+#line 247 "parser.y"
     { (yyval.nPtr) = machine.putId((yyvsp[(2) - (7)].iName), (yyvsp[(7) - (7)].iValue), "INT"); delete (yyvsp[(2) - (7)].iName); ;}
     break;
 
   case 110:
-#line 250 "parser.y"
+#line 248 "parser.y"
     { (yyval.nPtr) = machine.putId((yyvsp[(2) - (7)].iName), (yyvsp[(7) - (7)].iBool), "BOOL"); delete (yyvsp[(2) - (7)].iName); ;}
     break;
 
   case 111:
-#line 251 "parser.y"
+#line 249 "parser.y"
     { (yyval.nPtr) = machine.putId((yyvsp[(2) - (4)].iName), (yyvsp[(4) - (4)].iValue), "INT"); delete (yyvsp[(2) - (4)].iName); ;}
     break;
 
   case 112:
-#line 252 "parser.y"
+#line 250 "parser.y"
     { (yyval.nPtr) = machine.putId((yyvsp[(2) - (4)].iName), (yyvsp[(4) - (4)].iBool), "BOOL"); delete (yyvsp[(2) - (4)].iName); ;}
     break;
 
   case 113:
-#line 253 "parser.y"
+#line 251 "parser.y"
     { (yyval.nPtr) = ERROR("Missed literal", (yylsp[(7) - (7)]).first_line); yyerrok; delete (yyvsp[(2) - (7)].iName); ;}
     break;
 
   case 114:
-#line 254 "parser.y"
+#line 252 "parser.y"
     { (yyval.nPtr) = ERROR("Missed literal", (yylsp[(4) - (4)]).first_line); yyerrok; delete (yyvsp[(2) - (4)].iName); ;}
     break;
 
   case 115:
-#line 255 "parser.y"
+#line 253 "parser.y"
     { (yyval.nPtr) = ERROR("Missed '='", (yylsp[(6) - (6)]).first_line); yyerrok; delete (yyvsp[(2) - (6)].iName); ;}
     break;
 
   case 116:
-#line 256 "parser.y"
+#line 254 "parser.y"
     { (yyval.nPtr) = ERROR("Missed ']' or ','", (yylsp[(5) - (7)]).first_line); yyerrok; delete (yyvsp[(2) - (7)].iName); ;}
     break;
 
   case 117:
-#line 257 "parser.y"
+#line 255 "parser.y"
     { (yyval.nPtr) = ERROR("Missed ']' or ','", (yylsp[(5) - (7)]).first_line); yyerrok; delete (yyvsp[(2) - (7)].iName); ;}
     break;
 
   case 118:
-#line 258 "parser.y"
+#line 256 "parser.y"
     { (yyval.nPtr) = ERROR("Wrong enumeration size", (yylsp[(4) - (7)]).first_line); yyerrok; delete (yyvsp[(2) - (7)].iName); ;}
     break;
 
   case 119:
-#line 259 "parser.y"
+#line 257 "parser.y"
     { (yyval.nPtr) = ERROR("Wrong enumeration size", (yylsp[(4) - (7)]).first_line); yyerrok; delete (yyvsp[(2) - (7)].iName); ;}
     break;
 
   case 120:
-#line 260 "parser.y"
+#line 258 "parser.y"
     { (yyval.nPtr) = ERROR("Missed '[' or '='", (yylsp[(3) - (3)]).first_line); yyerrok; delete (yyvsp[(2) - (3)].iName); ;}
     break;
 
   case 121:
-#line 261 "parser.y"
+#line 259 "parser.y"
     { (yyval.nPtr) = ERROR("Missed name", (yylsp[(2) - (7)]).first_line); yyerrok;;}
     break;
 
   case 122:
-#line 262 "parser.y"
+#line 260 "parser.y"
     { (yyval.nPtr) = ERROR("Missed name", (yylsp[(2) - (7)]).first_line); yyerrok;;}
     break;
 
   case 123:
-#line 263 "parser.y"
+#line 261 "parser.y"
     { (yyval.nPtr) = ERROR("Undefine variable", (yylsp[(2) - (2)]).first_line); yyerrok; ;}
     break;
 
   case 124:
-#line 267 "parser.y"
+#line 265 "parser.y"
     { (yyval.nPtr) = machine.create("LOGITIZE", 1, machine.id((yyvsp[(2) - (2)].iName))); delete (yyvsp[(2) - (2)].iName); ;}
     break;
 
   case 125:
-#line 268 "parser.y"
+#line 266 "parser.y"
     { (yyval.nPtr) = machine.create("DIGITIZE", 1, machine.id((yyvsp[(2) - (2)].iName))); delete (yyvsp[(2) - (2)].iName); ;}
     break;
 
   case 126:
-#line 269 "parser.y"
+#line 267 "parser.y"
     { (yyval.nPtr) = machine.create("REDUCE", 2, machine.id((yyvsp[(2) - (5)].iName)), machine.constant((yyvsp[(4) - (5)].iValue), "INT")); delete (yyvsp[(2) - (5)].iName); ;}
     break;
 
   case 127:
-#line 270 "parser.y"
+#line 268 "parser.y"
     { (yyval.nPtr) = machine.create("EXTENED", 2 , machine.id((yyvsp[(2) - (5)].iName)), machine.constant((yyvsp[(4) - (5)].iValue), "INT")); delete (yyvsp[(2) - (5)].iName); ;}
     break;
 
   case 128:
-#line 271 "parser.y"
+#line 269 "parser.y"
     { (yyval.nPtr) = ERROR("Missed ']'", (yylsp[(5) - (5)]).first_line); yyerrok;  delete (yyvsp[(2) - (5)].iName);;}
     break;
 
   case 129:
-#line 272 "parser.y"
+#line 270 "parser.y"
     { (yyval.nPtr) = ERROR("Missed number", (yylsp[(4) - (5)]).first_line); yyerrok; delete (yyvsp[(2) - (5)].iName); ;}
     break;
 
   case 130:
-#line 273 "parser.y"
+#line 271 "parser.y"
     { (yyval.nPtr) = ERROR("Invalid argunemt", (yylsp[(4) - (4)]).first_line); yyerrok; delete (yyvsp[(2) - (4)].iName); ;}
     break;
 
   case 131:
-#line 274 "parser.y"
+#line 272 "parser.y"
     { (yyval.nPtr) = ERROR("Missed '['", (yylsp[(3) - (3)]).first_line); yyerrok; delete (yyvsp[(2) - (3)].iName); ;}
     break;
 
   case 132:
-#line 275 "parser.y"
+#line 273 "parser.y"
     { (yyval.nPtr) = ERROR("Missed variable", (yylsp[(2) - (2)]).first_line); yyerrok;;}
     break;
 
   case 133:
-#line 276 "parser.y"
+#line 274 "parser.y"
     { (yyval.nPtr) = ERROR("Missed ']'", (yylsp[(5) - (5)]).first_line); yyerrok; delete (yyvsp[(2) - (5)].iName); ;}
     break;
 
   case 134:
-#line 277 "parser.y"
+#line 275 "parser.y"
     { (yyval.nPtr) = ERROR("Missed number", (yylsp[(4) - (5)]).first_line); yyerrok; delete (yyvsp[(2) - (5)].iName); ;}
     break;
 
   case 135:
-#line 278 "parser.y"
+#line 276 "parser.y"
     { (yyval.nPtr) = ERROR("Invalid argunemt", (yylsp[(4) - (4)]).first_line); yyerrok; delete (yyvsp[(2) - (4)].iName); ;}
     break;
 
   case 136:
-#line 279 "parser.y"
+#line 277 "parser.y"
     { (yyval.nPtr) = ERROR("Missed '['", (yylsp[(3) - (3)]).first_line); yyerrok; delete (yyvsp[(2) - (3)].iName); ;}
     break;
 
   case 137:
-#line 280 "parser.y"
+#line 278 "parser.y"
     { (yyval.nPtr) = ERROR("Missed variable", (yylsp[(2) - (2)]).first_line); yyerrok;;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 2531 "parser.tab.c"
+#line 2529 "parser.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2747,7 +2745,7 @@ yyreturn:
 }
 
 
-#line 282 "parser.y"
+#line 280 "parser.y"
 
 
 
@@ -2795,27 +2793,15 @@ void freeNode(Vertex *node)
 
 //algorithm
 int main(void) {
-
-
-    std::ifstream file(fileName);
-    if (!file)
-    {
-        std::cerr << "Can't open file " << fileName << '\n';
-        return 1;
-    }
-
-    read_map(file, map, start, vision);
-
-  
-
-
     #if YYDEBUG
-    yydebug = 1;
-    yy_flex_debug = 1;
+        yydebug = 1;
+        yy_flex_debug = 1;
     #endif
+
     yyin = fopen ("./test2.txt", "r");
     yyparse();
     fclose (yyin);
+    
     return 0;
 }
 
