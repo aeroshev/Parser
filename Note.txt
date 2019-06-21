@@ -1,0 +1,2 @@
+//Repair argument in function DO TASK
+//Repair for bool - * /

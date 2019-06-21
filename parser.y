@@ -104,7 +104,7 @@ function_definition:
         | TASK error VARIABLE ENDLINE statement_list RESULT VARIABLE                                         { $$ = ERROR("Missed name function", @2.first_line); yyerrok ; delete $3; delete $7; }
         | TASK VARIABLE VARIABLE ',' '[' declaration_list ']' ENDLINE statement_list error                   { $$ = ERROR("Function must end RESULT", @1.first_line); yyerrok; }
         | TASK VARIABLE VARIABLE ENDLINE statement_list error                                                { $$ = ERROR("Function must end RESULT", @1.first_line); yyerrok; }
-        | TASK FINDEXIT ENDLINE statement_list error                                                              { $$ = ERROR("Function must end RESULT", @1.first_line); yyerrok; }
+        | TASK FINDEXIT ENDLINE statement_list error                                                         { $$ = ERROR("Function must end RESULT", @1.first_line); yyerrok; }
         | TASK VARIABLE VARIABLE ',' '[' declaration_list ']' ENDLINE statement_list RESULT error            { $$ = ERROR("Not provided variable for RESULT", @10.first_line); yyerrok; delete $2; delete $3; }
         | TASK VARIABLE VARIABLE ENDLINE statement_list RESULT error                                         { $$ = ERROR("Not provided variable for RESULT", @6.first_line); yyerrok; delete $2; delete $3; }
         | TASK error                                                                                         { $$ = ERROR("Somthening wrong in body function", @2.first_line); yyerrok; }
@@ -325,11 +325,13 @@ void freeNode(Vertex *node)
 //algorithm
 int main(void) {
     #if YYDEBUG
-    yydebug = 1;
-    yy_flex_debug = 1;
+        yydebug = 1;
+        yy_flex_debug = 1;
     #endif
+
     yyin = fopen ("./test2.txt", "r");
     yyparse();
     fclose (yyin);
+    
     return 0;
 }

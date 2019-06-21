@@ -10,12 +10,8 @@
 #include <algorithm>
 #include <iterator>
 #include <utility>
-#include <sstream>
 
-//Repair argument in function DO TASK
-//Repair for bool - * /
 void COMP_ERROR(const char*);
-
 
 enum Cell
 {
@@ -363,7 +359,7 @@ public:
         field.id = new Descriptior_Value("INT");
         field.id->name = "field";
 
-        field.id->literal = -1;
+        field.id->literal = 0;
 
         field.id->enum_dim.push_back(2);
         field.id->enum_dim.push_back(N);
