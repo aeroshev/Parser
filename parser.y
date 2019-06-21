@@ -14,6 +14,7 @@
 
     bool errorFlag = false;
 
+
     std::vector<std::vector<uint64_t> > map = { {1, 1, 1, 1, 1, 1, 1},
                                                 {1, 0, 0, 0, 1, 0, 1},
                                                 {1, 1, 1, 0, 1, 0, 1},
@@ -21,10 +22,10 @@
                                                 {1, 1, 1, 0, 1, 1, 1},
                                                 {1, 0, 0, 0, 0, 0, 1},
                                                 {1, 1, 1, 1, 1, 2, 1} };
-
+    
+    
     std::pair<uint64_t, uint64_t> start = std::make_pair(1, 1);
     std::pair<uint64_t, uint64_t> vision = std::make_pair(1, 0);
-
 
     MAIN_CLASS machine(start, vision, map);
 
@@ -92,7 +93,7 @@ statement_list:
         statement                               { $$ = $1; }
         | statement_list statement              { $$ = machine.create("ENDLINE", 2, $1, $2); }
         ;
-//
+
 function_definition:
         TASK VARIABLE VARIABLE ',' '[' declaration_list ']' ENDLINE statement_list RESULT VARIABLE           { $$ = nullptr; machine.putFunc($2, $3, $9, $11); delete $2; delete $3; delete $11; }
         | TASK VARIABLE VARIABLE ENDLINE statement_list RESULT VARIABLE                                      { $$ = nullptr; machine.putFunc($2, $3, $5, $7); delete $2; delete $3; delete $7; }
@@ -103,16 +104,19 @@ function_definition:
         | TASK error VARIABLE ENDLINE statement_list RESULT VARIABLE                                         { $$ = ERROR("Missed name function", @2.first_line); yyerrok ; delete $3; delete $7; }
         | TASK VARIABLE VARIABLE ',' '[' declaration_list ']' ENDLINE statement_list error                   { $$ = ERROR("Function must end RESULT", @1.first_line); yyerrok; }
         | TASK VARIABLE VARIABLE ENDLINE statement_list error                                                { $$ = ERROR("Function must end RESULT", @1.first_line); yyerrok; }
-        | TASK FINDEXIT ENDLINE statement_list                                                               { $$ = ERROR("Function must end RESULT", @1.first_line); yyerrok; }
+        | TASK FINDEXIT ENDLINE statement_list error                                                              { $$ = ERROR("Function must end RESULT", @1.first_line); yyerrok; }
+        | TASK VARIABLE VARIABLE ',' '[' declaration_list ']' ENDLINE statement_list RESULT error            { $$ = ERROR("Not provided variable for RESULT", @10.first_line); yyerrok; delete $2; delete $3; }
+        | TASK VARIABLE VARIABLE ENDLINE statement_list RESULT error                                         { $$ = ERROR("Not provided variable for RESULT", @6.first_line); yyerrok; delete $2; delete $3; }
         | TASK error                                                                                         { $$ = ERROR("Somthening wrong in body function", @2.first_line); yyerrok; }
         ;
-//
+
 call_definition:
         DO VARIABLE VARIABLE ',' '[' declaration_list ']'               { $$ = machine.funcall("DO", $2, $3, machine.args); delete $2; delete $3; }
         | DO VARIABLE VARIABLE                                          { $$ = machine.funcall("DO", $2, $3); delete $2; delete $3; }
         | DO error VARIABLE                                             { $$ = ERROR("Missed name function", @2.first_line); yyerrok; delete $3; }
         | DO error VARIABLE ',' '[' declaration_list ']'                { $$ = ERROR("Missed name function", @2.first_line); yyerrok; delete $3; }
         | DO VARIABLE error                                             { $$ = ERROR("Missed argument function", @3.first_line); yyerrok; delete $2; }
+        | DO VARIABLE VARIABLE '[' declaration_list ']'                 { $$ = ERROR("Missed ','", @3.first_line); yyerrok; delete $2; delete $3; }
         | DO error                                                      { $$ = ERROR("Not atribute for call function", @1.first_line); yyerrok; }                     
         ;
 
@@ -201,7 +205,7 @@ statement_s:
     | appeal_state error expression     { $$ = ERROR("Missed '='", @2.first_line); }
     ;
 
-//
+
 switch_state:
     SWITCH expression BOOL statement_list '[' BOOL statement_list ']'           { $$ = machine.create("SWITCH", 5, $2, machine.constant($3, "BOOL"), $4, machine.constant($6, "BOOL"), $7);} 
     | SWITCH expression BOOL statement_list '[' BOOL statement_list error       { $$ = ERROR("Missed ']'", @8.first_line); yyerrok; }

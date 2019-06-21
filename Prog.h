@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <iterator>
 #include <utility>
+#include <sstream>
 
 //Repair argument in function DO TASK
 //Repair for bool - * /
@@ -511,12 +512,13 @@ private:
     std::stack<std::string> NameSpace;
     
     Robot T800;
+    
 public:
     std::list<std::string> args;
     std::list<Vertex*> exprl;
     
     
-    explicit MAIN_CLASS(const std::pair<uint64_t, uint64_t>& coor, const std::pair<uint64_t, uint64_t>& dir, const std::vector<std::vector<uint64_t> > map_out):
+    explicit MAIN_CLASS(const std::pair<uint64_t, uint64_t>& coor, const std::pair<uint64_t, uint64_t>& dir, const std::vector<std::vector<uint64_t> >& map_out):
     T800(coor, dir, map_out)
     {
         NameSpace.push("GLOBAL");

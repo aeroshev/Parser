@@ -11,6 +11,8 @@ TASK FINDEXIT
 	)
 	FOR count BOUNDARY edge STEP step
 
+	SWITCH
+
 
 
 
@@ -18,4 +20,8 @@ TASK FINDEXIT
 TASK func var1
 	VAR was = 1F
 	VAR
+
+TASK func2 var2
+	VAR dir = 1F
+RESULT
 

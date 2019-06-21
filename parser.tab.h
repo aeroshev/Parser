@@ -114,7 +114,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 36 "parser.y"
+#line 37 "parser.y"
 {
     Vertex *nPtr;
     int iValue;
